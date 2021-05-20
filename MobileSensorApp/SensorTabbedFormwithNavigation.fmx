@@ -1,0 +1,1396 @@
+object TabbedwithNavigationForm: TTabbedwithNavigationForm
+  Left = 0
+  Top = 0
+  Caption = 'Form56'
+  ClientHeight = 534
+  ClientWidth = 333
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnCloseQuery = FormCloseQuery
+  OnDestroy = FormDestroy
+  OnKeyUp = FormKeyUp
+  OnShow = FormShow
+  DesignerMasterStyle = 3
+  object TbCtrlMain: TTabControl
+    Touch.GestureManager = GestureManager1
+    OnGesture = GestureDone
+    Align = Client
+    FullSize = True
+    Size.Width = 333.000000000000000000
+    Size.Height = 534.000000000000000000
+    Size.PlatformDefault = False
+    TabHeight = 49.000000000000000000
+    TabIndex = 0
+    TabOrder = 0
+    TabPosition = PlatformDefault
+    OnChange = TbCtrlChangeUpdate
+    Sizes = (
+      333s
+      485s
+      333s
+      485s
+      333s
+      485s
+      333s
+      485s
+      333s
+      485s)
+    object TbItemGenNav: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 66.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemfavorites'
+      TabOrder = 0
+      Text = 'Progress'
+      ExplicitSize.cx = 101.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object TbCtrlGenNav: TTabControl
+        Touch.GestureManager = GestureManager1
+        OnGesture = GestureDone
+        Align = Client
+        FullSize = True
+        Size.Width = 333.000000000000000000
+        Size.Height = 485.000000000000000000
+        Size.PlatformDefault = False
+        TabHeight = 49.000000000000000000
+        TabIndex = 1
+        TabOrder = 0
+        TabPosition = None
+        OnChange = TbCtrlChangeUpdate
+        Sizes = (
+          333s
+          485s
+          333s
+          485s
+          333s
+          485s
+          333s
+          485s)
+        object TbItemNavScrn: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'Current '
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object ToolBar1: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object lblTitle1: TLabel
+              Align = Client
+              Size.Width = 203.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = 'Progressive GPS Values'
+            end
+            object btnNext: TSpeedButton
+              Action = NextTabAction1
+              Align = Right
+              Enabled = True
+              ImageIndex = -1
+              Margins.Right = 5.000000000000000000
+              Position.X = 268.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Visible = True
+            end
+            object SpBtnResetAll: TSpeedButton
+              Align = Left
+              Size.Width = 65.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Start'
+              OnClick = SpBtnResetAllClick
+            end
+          end
+          object LblSpeed: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 48.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 57.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 50.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Speed'
+          end
+          object LblPos: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 145.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Current Position'
+          end
+          object LblStartPos: TLabel
+            Align = MostBottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 452.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 33.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Start Location'
+          end
+          object LblDistance: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 404.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Distance'
+          end
+          object LblHeading: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 105.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 40.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 30.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Heading'
+          end
+          object LblBearing: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 428.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Bearing'
+          end
+          object LblTotalDist: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 380.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Total Distance'
+          end
+        end
+        object TbItemPicture: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = True
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'TbItemPicture'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object ToolBarPicture: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object LblPicTitle: TLabel
+              Align = Client
+              Size.Width = 215.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = ' Title 1/2'
+            end
+            object SpBtnPicBack: TSpeedButton
+              Action = PreviousTabAction1
+              Align = Left
+              Enabled = True
+              ImageIndex = -1
+              Margins.Left = 5.000000000000000000
+              Position.X = 5.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              Visible = True
+            end
+            object SpBtnPicNext: TSpeedButton
+              Action = NextTabAction1
+              Align = Right
+              Enabled = True
+              ImageIndex = -1
+              Margins.Right = 5.000000000000000000
+              Position.X = 268.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Visible = True
+            end
+          end
+          object PnlMap: TPanel
+            Align = Client
+            Size.Width = 333.000000000000000000
+            Size.Height = 389.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object Image1: TImage
+              MultiResBitmap = <
+                item
+                end>
+              Align = Client
+              Size.Width = 333.000000000000000000
+              Size.Height = 389.000000000000000000
+              Size.PlatformDefault = False
+              OnMouseDown = ImageMouseDown
+            end
+          end
+          object ToolBarZoomPic: TToolBar
+            Align = MostBottom
+            Position.Y = 437.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 6
+            object SpBtnZoomInPict: TSpeedButton
+              Align = Right
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 264.000000000000000000
+              Size.Width = 64.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Zoom In'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnZoomClick
+            end
+            object SpBtnZoomOut: TSpeedButton
+              Align = Left
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Size.Width = 72.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Zoom Out'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnZoomClick
+            end
+            object SpBtnPicLoc1: TSpeedButton
+              Align = Left
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 77.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Go Start'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnMapLocClick
+            end
+            object SpBtnPicLocEnd: TSpeedButton
+              Align = Right
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 199.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Go End'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnMapLocClick
+            end
+            object SpBtnShowAllProgress: TSpeedButton
+              Align = Center
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Size.Width = 38.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'All'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnShowAllProgressClick
+            end
+          end
+        end
+        object TbItemHoldValues: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'TbItemHoldValues'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object ToolBar2: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object lblTitle2: TLabel
+              Align = Client
+              Size.Width = 215.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = ' Title 1/2'
+            end
+            object btnBack: TSpeedButton
+              Action = PreviousTabAction1
+              Align = Left
+              Enabled = True
+              ImageIndex = -1
+              Margins.Left = 5.000000000000000000
+              Position.X = 5.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              Visible = True
+            end
+            object BtnNext2: TSpeedButton
+              Action = NextTabAction1
+              Align = Right
+              Enabled = True
+              ImageIndex = -1
+              Margins.Right = 5.000000000000000000
+              Position.X = 268.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Visible = True
+            end
+          end
+          object LblDistance2: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 418.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Distance'
+          end
+          object LblStartPos2: TLabel
+            Align = MostBottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 458.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 27.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Start Point'
+          end
+          object LblPos2: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 145.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Snapshot'
+          end
+          object LblSpeed2: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 48.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 57.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 50.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Speed Snapshot'
+          end
+          object LblBearing2: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 442.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 16.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Bearing'
+          end
+          object LblHeading2: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 105.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 40.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 30.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Heading Snapshot'
+          end
+        end
+        object TbItemRecords: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'Record'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object ToolBar6: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object LblT1p3: TLabel
+              Align = Client
+              Size.Width = 227.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = 'All Locations Sampled'
+            end
+            object BtnBack3: TSpeedButton
+              Action = PreviousTabAction1
+              Align = MostLeft
+              Enabled = True
+              StyledSettings = [Family, Size, Style]
+              ImageIndex = -1
+              Margins.Left = 5.000000000000000000
+              Position.X = 5.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              TextSettings.FontColor = claCrimson
+              Visible = True
+            end
+            object SpBtnSaveAllLoc: TSpeedButton
+              Align = MostRight
+              StyledSettings = [Family, Size, Style]
+              Margins.Left = 5.000000000000000000
+              Position.X = 285.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              Text = 'Save'
+              TextSettings.FontColor = claCrimson
+              OnClick = SaveAllLocClick
+            end
+          end
+          object MmoTrkLocations: TMemo
+            Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+            DataDetectorTypes = []
+            Align = Client
+            Size.Width = 333.000000000000000000
+            Size.Height = 437.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            Viewport.Width = 325.000000000000000000
+            Viewport.Height = 429.000000000000000000
+          end
+        end
+      end
+    end
+    object TbItemMeasure: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 66.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemcontacts'
+      TabOrder = 0
+      Text = 'Measure'
+      ExplicitSize.cx = 102.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object TbCtrlMeasure: TTabControl
+        Touch.GestureManager = GestureManager1
+        OnGesture = GestureDone
+        Align = Client
+        FullSize = True
+        Size.Width = 333.000000000000000000
+        Size.Height = 485.000000000000000000
+        Size.PlatformDefault = False
+        TabHeight = 49.000000000000000000
+        TabIndex = 3
+        TabOrder = 0
+        TabPosition = None
+        OnChange = TbCtrlChangeUpdate
+        Sizes = (
+          333s
+          485s
+          333s
+          485s
+          333s
+          485s
+          333s
+          485s)
+        object TbItemRunningAverage: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'TbItemNavScrn'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object LblHomeInMain: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 48.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 57.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Sample Count'
+          end
+          object LblHomeInBlack: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 145.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Result'
+          end
+          object LblBtmHomein: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 404.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 33.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Distance from First Location'
+          end
+          object LblBtm2HomeIn: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 356.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Last Location'
+          end
+          object LblHomeInMinor: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 105.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 40.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 16.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Varience'
+          end
+          object LblBtm1HomeIn: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 380.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Distance Frm Last Location'
+          end
+          object TBarTopHomeIn: TToolBar
+            Align = MostTop
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 7
+            object LblHomeInCaption: TLabel
+              Align = Client
+              Size.Width = 264.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = 'Progressive GPS Values'
+            end
+            object SpBtnHomeInNext: TSpeedButton
+              Action = NextTabAction2
+              Align = Right
+              Enabled = True
+              StyledSettings = [Family, Size, Style]
+              ImageIndex = -1
+              Margins.Right = 5.000000000000000000
+              Position.X = 264.000000000000000000
+              Size.Width = 64.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.FontColor = claCrimson
+              Visible = True
+            end
+          end
+          object TBarBotHomeIn: TToolBar
+            Align = MostBottom
+            Position.Y = 437.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 6
+            object LblStartStopAverage: TLabel
+              Align = Client
+              Size.Width = 256.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = 'Home in on This Location'
+            end
+            object SpBtnStartStopHomeIn: TSpeedButton
+              Align = Right
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 256.000000000000000000
+              Size.Width = 72.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Start'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnStartStopHomeInClick
+            end
+          end
+        end
+        object TbItemAveDetailst: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'TbItemHoldValues'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object ToolBar8: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object LblSnapTitle: TLabel
+              Align = Client
+              Size.Width = 215.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = 'Progressive Sampling Details'
+            end
+            object SpBtnAveSnapBck: TSpeedButton
+              Action = PreviousTabAction2
+              Align = Left
+              Enabled = True
+              StyledSettings = [Family, Size, Style]
+              ImageIndex = -1
+              Margins.Left = 5.000000000000000000
+              Position.X = 5.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              TextSettings.FontColor = claCrimson
+              Visible = True
+            end
+            object SpBtnAveSnapNxt: TSpeedButton
+              Action = NextTabAction2
+              Align = Right
+              Enabled = True
+              StyledSettings = [Family, Size, Style]
+              ImageIndex = -1
+              Margins.Right = 5.000000000000000000
+              Position.X = 268.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.FontColor = claCrimson
+              Visible = True
+            end
+          end
+          object LblCurentLocationText: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 113.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Actual  Location'
+          end
+          object LblAverageLocationText: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 365.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Average Location'
+          end
+          object LblMetersPerSecondDetail: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 48.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 33.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 18.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'No of Counts'
+          end
+          object LblAveTimeSampling: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 137.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 21.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Time Sampling'
+          end
+          object LblNoOfSamples: TLabel
+            Align = Top
+            StyledSettings = [Style]
+            Position.Y = 81.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 32.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Family = 'Calibri'
+            TextSettings.Font.Size = 20.000000000000000000
+            TextSettings.FontColor = claCrimson
+            TextSettings.HorzAlign = Center
+            Text = 'Total  Samples'
+          end
+          object LblLocationDev: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 389.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Loc Dev'
+          end
+          object LblAveSpeed: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 158.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Ave Speed'
+          end
+          object LblAveHding: TLabel
+            Align = Top
+            StyledSettings = [Style, FontColor]
+            Position.Y = 182.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'Ave Heading'
+          end
+          object LblAveAlt: TLabel
+            Align = Bottom
+            StyledSettings = [Style, FontColor]
+            Position.Y = 413.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 24.000000000000000000
+            Size.PlatformDefault = False
+            TextSettings.Font.Size = 15.000000000000000000
+            TextSettings.HorzAlign = Center
+            Text = 'AveAlt'
+          end
+          object ToolBar3: TToolBar
+            Align = MostBottom
+            Position.Y = 437.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 10
+            object SpBtnRestDetails: TSpeedButton
+              Align = Right
+              Position.X = 284.000000000000000000
+              Size.Width = 49.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Reset'
+              OnClick = SpBtnRestDetailsClick
+            end
+            object SpBtnDtlsStopStart: TSpeedButton
+              Align = Left
+              Size.Width = 49.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Stop'
+              OnClick = SpBtnStartStopHomeInClick
+            end
+            object LblAveSnapBottom: TLabel
+              Align = Client
+              StyledSettings = [Style, FontColor]
+              Size.Width = 235.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              TextSettings.Font.Size = 15.000000000000000000
+              TextSettings.HorzAlign = Center
+              Text = 'Sampling'
+            end
+          end
+        end
+        object TbItemMeasPict: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'TbItemMeasPict'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object PnlMeasPict: TPanel
+            Align = Client
+            Size.Width = 333.000000000000000000
+            Size.Height = 389.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            object Image2: TImage
+              MultiResBitmap = <
+                item
+                end>
+              Align = Client
+              Size.Width = 333.000000000000000000
+              Size.Height = 389.000000000000000000
+              Size.PlatformDefault = False
+              OnMouseDown = ImageMouseDown
+            end
+          end
+          object ToolBarMeasPictTop: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object LblMeasurePicTop: TLabel
+              Align = Client
+              Size.Width = 215.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = ' Title 1/2'
+            end
+            object SpeedButton1: TSpeedButton
+              Action = PreviousTabAction2
+              Align = Left
+              Enabled = True
+              ImageIndex = -1
+              Margins.Left = 5.000000000000000000
+              Position.X = 5.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              Visible = True
+            end
+            object SpeedButton2: TSpeedButton
+              Action = NextTabAction2
+              Align = Right
+              Enabled = True
+              ImageIndex = -1
+              Margins.Right = 5.000000000000000000
+              Position.X = 268.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Visible = True
+            end
+          end
+          object ToolBarZoomMeasure: TToolBar
+            Align = MostBottom
+            Position.Y = 437.000000000000000000
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 6
+            object SpBtnZoomInMeasure: TSpeedButton
+              Align = Right
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 256.000000000000000000
+              Size.Width = 72.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Zoom In'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnZoomMeasureClick
+            end
+            object SpBtnZoomOutMeasure: TSpeedButton
+              Align = Left
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Size.Width = 72.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Zoom Out'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnZoomMeasureClick
+            end
+            object SpBtnMsrLocStart: TSpeedButton
+              Align = Left
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 77.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Go Start'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnMapLocClick
+            end
+            object SpBtnMsrLocEnd: TSpeedButton
+              Align = Right
+              StyledSettings = [Family, Size, Style]
+              Margins.Right = 5.000000000000000000
+              Position.X = 191.000000000000000000
+              Size.Width = 60.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              Text = 'Go End'
+              TextSettings.FontColorForState.Normal = claSeagreen
+              TextSettings.FontColorForState.Hot = claViolet
+              TextSettings.FontColorForState.Pressed = claTomato
+              TextSettings.FontColorForState.Focused = claTeal
+              OnClick = SpBtnMapLocClick
+            end
+          end
+        end
+        object TbItemPastSamples: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = True
+          Size.Width = 8.000000000000000000
+          Size.Height = 8.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'Past Samples'
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          object ToolBar9: TToolBar
+            Size.Width = 333.000000000000000000
+            Size.Height = 48.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            object LblAveSnapTitle: TLabel
+              Align = Client
+              Size.Width = 227.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'toollabel'
+              TextSettings.HorzAlign = Center
+              Text = ' Previous  Locations and Distances '
+            end
+            object SpBtnAveRsltsBck: TSpeedButton
+              Action = PreviousTabAction2
+              Align = MostLeft
+              Enabled = True
+              StyledSettings = [Family, Size, Style]
+              ImageIndex = -1
+              Margins.Left = 5.000000000000000000
+              Position.X = 5.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              TextSettings.FontColor = claCrimson
+              Visible = True
+            end
+            object SpBtnSaveAve: TSpeedButton
+              Align = MostRight
+              StyledSettings = [Family, Size, Style]
+              Margins.Left = 5.000000000000000000
+              Position.X = 285.000000000000000000
+              Size.Width = 48.000000000000000000
+              Size.Height = 48.000000000000000000
+              Size.PlatformDefault = False
+              StyleLookup = 'speedbuttonstyle'
+              Text = 'Save'
+              TextSettings.FontColor = claCrimson
+              OnClick = SaveAverageData
+            end
+          end
+          object MmoPreviusLocations: TMemo
+            Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+            DataDetectorTypes = []
+            Align = Client
+            Size.Width = 333.000000000000000000
+            Size.Height = 437.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            Viewport.Width = 325.000000000000000000
+            Viewport.Height = 429.000000000000000000
+          end
+        end
+      end
+    end
+    object TabAbout: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 66.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemsearch'
+      TabOrder = 0
+      Text = 'About'
+      ExplicitSize.cx = 101.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object ToolBar4: TToolBar
+        Size.Width = 333.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object SpBtnStartGPS: TSpeedButton
+          Align = Left
+          Size.Width = 65.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Start GPS'
+          OnClick = SpBtnResetAllClick
+        end
+        object SpBtnStartMotion: TSpeedButton
+          Align = Left
+          Position.X = 65.000000000000000000
+          Size.Width = 88.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Start Motion'
+          OnClick = SpBtnStartMotionClick
+        end
+        object SpBtnStopAll: TSpeedButton
+          Align = Left
+          Position.X = 153.000000000000000000
+          Size.Width = 95.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Stop Sensors'
+          OnClick = RemoveAllSensors
+        end
+      end
+      object MmoAbout: TMemo
+        Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+        DataDetectorTypes = []
+        Align = Client
+        Size.Width = 333.000000000000000000
+        Size.Height = 437.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        Viewport.Width = 325.000000000000000000
+        Viewport.Height = 429.000000000000000000
+      end
+    end
+    object TIMap: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 66.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Map'
+      ExplicitSize.cx = 66.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object WebBrowser1: TWebBrowser
+        Align = Client
+        Size.Width = 333.000000000000000000
+        Size.Height = 465.000000000000000000
+        Size.PlatformDefault = False
+        Margins.Top = 20.000000000000000000
+      end
+    end
+    object TiTestValue1: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 69.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitembookmarks'
+      TabOrder = 0
+      Text = 'Test'
+      ExplicitSize.cx = 99.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object ToolBar5: TToolBar
+        Size.Width = 333.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object lblTestValues: TLabel
+          Align = Contents
+          Size.Width = 333.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = 'toollabel'
+          TextSettings.HorzAlign = Center
+          Text = 'Test Values'
+        end
+        object SpBtnSetTestValues: TSpeedButton
+          Align = Left
+          Size.Width = 80.000000000000000000
+          Size.Height = 48.000000000000000000
+          Size.PlatformDefault = False
+          Text = 'Set Test Values'
+          OnClick = SpBtnSetTestValuesClick
+        end
+      end
+      object LblTestStart: TLabel
+        Align = Top
+        StyledSettings = [Family]
+        Position.Y = 48.000000000000000000
+        Size.Width = 333.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claBlue
+        TextSettings.HorzAlign = Center
+        Text = 'LblTestStart'
+      end
+      object LblTestEnd: TLabel
+        Align = Top
+        StyledSettings = [Family]
+        Position.Y = 217.000000000000000000
+        Size.Width = 333.000000000000000000
+        Size.Height = 32.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claBlue
+        TextSettings.HorzAlign = Center
+        Text = 'LblTestEnd'
+      end
+      object LblTestDistance: TLabel
+        Align = Top
+        StyledSettings = [Family]
+        Position.Y = 177.000000000000000000
+        Size.Width = 333.000000000000000000
+        Size.Height = 40.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claBlue
+        TextSettings.HorzAlign = Center
+        Text = 'LblTestDistance'
+      end
+      object LblBackAgain: TLabel
+        Align = Top
+        StyledSettings = [Family]
+        Position.Y = 145.000000000000000000
+        Size.Width = 333.000000000000000000
+        Size.Height = 32.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claBlue
+        TextSettings.HorzAlign = Center
+        Text = 'LblBackAgain'
+      end
+      object LblTestBearing: TLabel
+        Align = Top
+        StyledSettings = [Family]
+        Position.Y = 81.000000000000000000
+        Size.Width = 333.000000000000000000
+        Size.Height = 31.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claBlue
+        TextSettings.HorzAlign = Center
+        Text = 'LblTestBearing'
+      end
+      object LblReversBearing: TLabel
+        Align = Top
+        StyledSettings = [Family]
+        Position.Y = 112.000000000000000000
+        Size.Width = 333.000000000000000000
+        Size.Height = 33.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Size = 15.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.FontColor = claBlue
+        TextSettings.HorzAlign = Center
+        Text = 'LblReversBearing'
+      end
+      object MmoSamplingDetails: TMemo
+        Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+        DataDetectorTypes = []
+        Align = Client
+        Size.Width = 333.000000000000000000
+        Size.Height = 236.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 7
+        Viewport.Width = 325.000000000000000000
+        Viewport.Height = 228.000000000000000000
+      end
+    end
+  end
+  object UpdateTimer: TTimer
+    OnTimer = UpdateTimerTimer
+    Left = 40
+    Top = 409
+  end
+  object GestureManager1: TGestureManager
+    Sensitivity = 80.000000000000000000
+    Left = 176
+    Top = 297
+    GestureData = <
+      item
+        Control = TbCtrlMain
+        Collection = <
+          item
+            GestureID = sgiLeft
+          end
+          item
+            GestureID = sgiRight
+          end>
+      end
+      item
+        Control = TbCtrlGenNav
+        Collection = <
+          item
+            GestureID = sgiLeft
+          end
+          item
+            GestureID = sgiRight
+          end>
+      end
+      item
+        Control = TbCtrlMeasure
+        Collection = <>
+      end>
+  end
+  object ActionList1: TActionList
+    Left = 32
+    Top = 256
+    object NextTabAction1: TNextTabAction
+      Category = 'Tab'
+      TabControl = TbCtrlGenNav
+    end
+    object PreviousTabAction1: TPreviousTabAction
+      Category = 'Tab'
+      TabControl = TbCtrlGenNav
+    end
+    object PreviousTabAction2: TPreviousTabAction
+      Category = 'Tab'
+      TabControl = TbCtrlMeasure
+    end
+    object NextTabAction2: TNextTabAction
+      Category = 'Tab'
+      TabControl = TbCtrlMeasure
+    end
+  end
+end

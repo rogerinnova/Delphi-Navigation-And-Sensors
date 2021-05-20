@@ -1,0 +1,455 @@
+inherited TabbedwithNavigationForm_SmXhdpiPh: TTabbedwithNavigationForm_SmXhdpiPh
+  ClientHeight = 375
+  ClientWidth = 250
+  DesignerMasterStyle = 3
+  inherited TbCtrlMain: TTabControl
+    Size.Width = 250.000000000000000000
+    Size.Height = 375.000000000000000000
+    Sizes = (
+      250s
+      326s
+      250s
+      326s
+      250s
+      326s
+      250s
+      326s
+      250s
+      326s)
+    inherited TbItemGenNav: TTabItem
+      Size.Width = 50.000000000000000000
+      ExplicitSize.cx = 101.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited TbCtrlGenNav: TTabControl
+        Size.Width = 250.000000000000000000
+        Size.Height = 326.000000000000000000
+        TabIndex = 1
+        Sizes = (
+          250s
+          326s
+          250s
+          326s
+          250s
+          326s
+          250s
+          326s)
+        inherited TbItemNavScrn: TTabItem
+          IsSelected = False
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited ToolBar1: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited lblTitle1: TLabel
+              Size.Width = 120.000000000000000000
+            end
+            inherited btnNext: TSpeedButton
+              Position.X = 185.000000000000000000
+            end
+          end
+          inherited LblSpeed: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblPos: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblStartPos: TLabel
+            Position.Y = 293.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblDistance: TLabel
+            Position.Y = 245.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblHeading: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblBearing: TLabel
+            Position.Y = 269.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblTotalDist: TLabel
+            Position.Y = 221.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+        end
+        inherited TbItemPicture: TTabItem
+          IsSelected = True
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited ToolBarPicture: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited LblPicTitle: TLabel
+              Size.Width = 132.000000000000000000
+            end
+            inherited SpBtnPicNext: TSpeedButton
+              Position.X = 185.000000000000000000
+            end
+          end
+          inherited PnlMap: TPanel
+            Size.Width = 250.000000000000000000
+            Size.Height = 230.000000000000000000
+            inherited Image1: TImage
+              Size.Width = 250.000000000000000000
+              Size.Height = 230.000000000000000000
+            end
+          end
+          inherited ToolBarZoomPic: TToolBar
+            Position.Y = 278.000000000000000000
+            Size.Width = 250.000000000000000000
+            inherited SpBtnZoomInPict: TSpeedButton
+              Position.X = 184.000000000000000000
+              Size.Width = 61.000000000000000000
+            end
+            inherited SpBtnZoomOut: TSpeedButton
+              Size.Width = 73.000000000000000000
+            end
+            inherited SpBtnPicLoc1: TSpeedButton
+              Position.X = 78.000000000000000000
+              Size.Width = 51.000000000000000000
+              Text = 'Start'
+            end
+            inherited SpBtnPicLocEnd: TSpeedButton
+              Position.X = 134.000000000000000000
+              Size.Width = 45.000000000000000000
+              Text = 'End'
+            end
+          end
+        end
+        inherited TbItemHoldValues: TTabItem
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited ToolBar2: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited lblTitle2: TLabel
+              Size.Width = 132.000000000000000000
+            end
+            inherited BtnNext2: TSpeedButton
+              Position.X = 185.000000000000000000
+            end
+          end
+          inherited LblDistance2: TLabel
+            Position.Y = 259.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblStartPos2: TLabel
+            Position.Y = 299.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblPos2: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblSpeed2: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblBearing2: TLabel
+            Position.Y = 283.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblHeading2: TLabel
+            Size.Width = 250.000000000000000000
+          end
+        end
+        inherited TbItemRecords: TTabItem
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited ToolBar6: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited LblT1p3: TLabel
+              Size.Width = 144.000000000000000000
+            end
+            inherited SpBtnSaveAllLoc: TSpeedButton
+              Position.X = 202.000000000000000000
+            end
+          end
+          inherited MmoTrkLocations: TMemo
+            Size.Width = 250.000000000000000000
+            Size.Height = 278.000000000000000000
+            Viewport.Width = 250.000000000000000000
+            Viewport.Height = 278.000000000000000000
+          end
+        end
+      end
+    end
+    inherited TbItemMeasure: TTabItem
+      Size.Width = 50.000000000000000000
+      ExplicitSize.cx = 102.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited TbCtrlMeasure: TTabControl
+        Size.Width = 250.000000000000000000
+        Size.Height = 326.000000000000000000
+        TabIndex = 2
+        Sizes = (
+          250s
+          326s
+          250s
+          326s
+          250s
+          326s
+          250s
+          326s)
+        inherited TbItemRunningAverage: TTabItem
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited LblHomeInMain: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblHomeInBlack: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblBtmHomein: TLabel
+            Position.Y = 245.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblBtm2HomeIn: TLabel
+            Position.Y = 197.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblHomeInMinor: TLabel
+            Size.Width = 250.000000000000000000
+          end
+          inherited LblBtm1HomeIn: TLabel
+            Position.Y = 221.000000000000000000
+            Size.Width = 250.000000000000000000
+          end
+          inherited TBarTopHomeIn: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited LblHomeInCaption: TLabel
+              Size.Width = 181.000000000000000000
+            end
+            inherited SpBtnHomeInNext: TSpeedButton
+              Position.X = 181.000000000000000000
+            end
+          end
+          inherited TBarBotHomeIn: TToolBar
+            Position.Y = 278.000000000000000000
+            Size.Width = 250.000000000000000000
+            inherited LblStartStopAverage: TLabel
+              Size.Width = 173.000000000000000000
+            end
+            inherited SpBtnStartStopHomeIn: TSpeedButton
+              Position.X = 173.000000000000000000
+            end
+          end
+        end
+        inherited TbItemAveDetailst: TTabItem
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited ToolBar8: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited LblSnapTitle: TLabel
+              StyledSettings = [Family, Style, FontColor]
+              Size.Width = 132.000000000000000000
+              TextSettings.Font.Size = 14.000000000000000000
+            end
+            inherited SpBtnAveSnapNxt: TSpeedButton
+              Position.X = 185.000000000000000000
+            end
+          end
+          inherited LblCurentLocationText: TLabel
+            Position.Y = 97.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 22.000000000000000000
+          end
+          inherited LblAverageLocationText: TLabel
+            Position.Y = 212.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 22.000000000000000000
+          end
+          inherited LblMetersPerSecondDetail: TLabel
+            Size.Width = 250.000000000000000000
+            Size.Height = 25.000000000000000000
+            TextSettings.Font.Size = 14.000000000000000000
+          end
+          inherited LblAveTimeSampling: TLabel
+            Position.Y = 119.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 30.000000000000000000
+          end
+          inherited LblNoOfSamples: TLabel
+            Position.Y = 73.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 24.000000000000000000
+            TextSettings.Font.Size = 14.000000000000000000
+          end
+          inherited LblLocationDev: TLabel
+            Position.Y = 234.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 22.000000000000000000
+          end
+          inherited LblAveSpeed: TLabel
+            Position.Y = 149.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 22.000000000000000000
+          end
+          inherited LblAveHding: TLabel
+            Position.Y = 171.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 22.000000000000000000
+          end
+          inherited LblAveAlt: TLabel
+            Position.Y = 256.000000000000000000
+            Size.Width = 250.000000000000000000
+            Size.Height = 22.000000000000000000
+          end
+          inherited ToolBar3: TToolBar
+            Position.Y = 278.000000000000000000
+            Size.Width = 250.000000000000000000
+            inherited SpBtnRestDetails: TSpeedButton
+              Position.X = 201.000000000000000000
+            end
+            inherited LblAveSnapBottom: TLabel
+              Size.Width = 152.000000000000000000
+            end
+          end
+        end
+        inherited TbItemMeasPict: TTabItem
+          IsSelected = True
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited PnlMeasPict: TPanel
+            Size.Width = 250.000000000000000000
+            Size.Height = 230.000000000000000000
+            inherited Image2: TImage
+              Align = None
+              Position.X = 8.000000000000000000
+              Size.Width = 233.000000000000000000
+              Size.Height = 230.000000000000000000
+            end
+          end
+          inherited ToolBarMeasPictTop: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited LblMeasurePicTop: TLabel
+              Size.Width = 132.000000000000000000
+            end
+            inherited SpeedButton2: TSpeedButton
+              Position.X = 185.000000000000000000
+            end
+          end
+          inherited ToolBarZoomMeasure: TToolBar
+            Position.Y = 278.000000000000000000
+            Size.Width = 250.000000000000000000
+            inherited SpBtnZoomInMeasure: TSpeedButton
+              Position.X = 184.000000000000000000
+              Size.Width = 61.000000000000000000
+            end
+            inherited SpBtnMsrLocEnd: TSpeedButton
+              Position.X = 129.000000000000000000
+              Size.Width = 50.000000000000000000
+            end
+          end
+        end
+        inherited TbItemPastSamples: TTabItem
+          IsSelected = False
+          ExplicitSize.cx = 8.000000000000000000
+          ExplicitSize.cy = 8.000000000000000000
+          inherited ToolBar9: TToolBar
+            Size.Width = 250.000000000000000000
+            inherited LblAveSnapTitle: TLabel
+              Size.Width = 144.000000000000000000
+            end
+            inherited SpBtnSaveAve: TSpeedButton
+              Position.X = 202.000000000000000000
+            end
+          end
+          inherited MmoPreviusLocations: TMemo
+            Size.Width = 250.000000000000000000
+            Size.Height = 278.000000000000000000
+            Viewport.Width = 250.000000000000000000
+            Viewport.Height = 278.000000000000000000
+          end
+        end
+      end
+    end
+    inherited TabAbout: TTabItem
+      Size.Width = 50.000000000000000000
+      ExplicitSize.cx = 101.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited ToolBar4: TToolBar
+        Size.Width = 250.000000000000000000
+      end
+      inherited MmoAbout: TMemo
+        Size.Width = 250.000000000000000000
+        Size.Height = 278.000000000000000000
+        Viewport.Width = 250.000000000000000000
+        Viewport.Height = 278.000000000000000000
+      end
+    end
+    inherited TIMap: TTabItem
+      Size.Width = 50.000000000000000000
+      ExplicitSize.cx = 66.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited WebBrowser1: TWebBrowser
+        Size.Width = 250.000000000000000000
+        Size.Height = 306.000000000000000000
+      end
+    end
+    inherited TiTestValue1: TTabItem
+      Size.Width = 50.000000000000000000
+      ExplicitSize.cx = 99.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      inherited ToolBar5: TToolBar
+        Size.Width = 250.000000000000000000
+        inherited lblTestValues: TLabel
+          Size.Width = 250.000000000000000000
+        end
+      end
+      inherited LblTestStart: TLabel
+        Size.Width = 250.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+      end
+      inherited LblTestEnd: TLabel
+        Size.Width = 250.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+      end
+      inherited LblTestDistance: TLabel
+        Size.Width = 250.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+      end
+      inherited LblBackAgain: TLabel
+        Size.Width = 250.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+      end
+      inherited LblTestBearing: TLabel
+        Size.Width = 250.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+      end
+      inherited LblReversBearing: TLabel
+        Size.Width = 250.000000000000000000
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+      end
+      inherited MmoSamplingDetails: TMemo
+        Size.Width = 250.000000000000000000
+        Size.Height = 77.000000000000000000
+        Viewport.Width = 242.000000000000000000
+        Viewport.Height = 69.000000000000000000
+      end
+    end
+  end
+  inherited GestureManager1: TGestureManager
+    GestureData = <
+      item
+        Control = TbCtrlMain
+        Collection = <
+          item
+            GestureID = sgiLeft
+          end
+          item
+            GestureID = sgiRight
+          end>
+      end
+      item
+        Control = TbCtrlGenNav
+        Collection = <
+          item
+            GestureID = sgiLeft
+          end
+          item
+            GestureID = sgiRight
+          end>
+      end
+      item
+        Control = TbCtrlMeasure
+        Collection = <>
+      end>
+  end
+end

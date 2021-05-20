@@ -1,0 +1,170 @@
+object Directions: TDirections
+  Left = 0
+  Top = 0
+  Caption = 'Form3'
+  ClientHeight = 591
+  ClientWidth = 756
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object LblFrom: TLabel
+    StyledSettings = [Family, Size, Style]
+    Position.X = 168.000000000000000000
+    Position.Y = 40.000000000000000000
+    Scale.X = 2.000000000000000000
+    Scale.Y = 2.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.FontColor = claCrimson
+    Text = 'From'
+    TabOrder = 26
+  end
+  object lbllong: TLabel
+    Position.X = 304.000000000000000000
+    Position.Y = 96.000000000000000000
+    Size.Width = 105.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Source Longitude'
+    TabOrder = 17
+  end
+  object EdtLong: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 9
+    Text = '145.66'
+    Position.X = 424.000000000000000000
+    Position.Y = 88.000000000000000000
+    Size.Width = 281.000000000000000000
+    Size.Height = 30.000000000000000000
+    Size.PlatformDefault = False
+    OnChange = EdtFromChange
+  end
+  object LblLat: TLabel
+    Position.X = 304.000000000000000000
+    Position.Y = 136.000000000000000000
+    Size.Width = 97.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Source Latitude'
+    TabOrder = 18
+  end
+  object EdtLat: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 10
+    Text = '-37.999'
+    Position.X = 424.000000000000000000
+    Position.Y = 128.000000000000000000
+    Size.Width = 281.000000000000000000
+    Size.Height = 30.000000000000000000
+    Size.PlatformDefault = False
+    OnChange = EdtFromChange
+  end
+  object BtnGoGoogle: TButton
+    Position.X = 369.000000000000000000
+    Position.Y = 392.000000000000000000
+    Size.Width = 96.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 11
+    Text = 'Go to Google'
+    OnClick = BtnGoGoogleClick
+  end
+  object LblLocation: TLabel
+    Position.X = 160.000000000000000000
+    Position.Y = 176.000000000000000000
+    Size.Width = 553.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'LblLocation'
+    TabOrder = 19
+  end
+  object LblTo: TLabel
+    StyledSettings = [Family, Size, Style]
+    Position.X = 168.000000000000000000
+    Position.Y = 224.000000000000000000
+    Scale.X = 2.000000000000000000
+    Scale.Y = 2.000000000000000000
+    Size.Width = 41.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.FontColor = claCrimson
+    Text = 'To'
+    TabOrder = 25
+  end
+  object LblLong2: TLabel
+    Position.X = 304.000000000000000000
+    Position.Y = 280.000000000000000000
+    Size.Width = 105.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'End Longitude'
+    TabOrder = 16
+  end
+  object EdtLong2: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 7
+    Text = '145.69'
+    Position.X = 424.000000000000000000
+    Position.Y = 272.000000000000000000
+    Size.Width = 281.000000000000000000
+    Size.Height = 30.000000000000000000
+    Size.PlatformDefault = False
+    OnChange = EdtToChange
+  end
+  object LblLat2: TLabel
+    Position.X = 304.000000000000000000
+    Position.Y = 320.000000000000000000
+    Size.Width = 97.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'End Latitude'
+    TabOrder = 15
+  end
+  object EdtLat2: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 8
+    Text = '-38'
+    Position.X = 424.000000000000000000
+    Position.Y = 312.000000000000000000
+    Size.Width = 281.000000000000000000
+    Size.Height = 30.000000000000000000
+    Size.PlatformDefault = False
+    OnChange = EdtToChange
+  end
+  object LblLocation2: TLabel
+    Position.X = 160.000000000000000000
+    Position.Y = 360.000000000000000000
+    Size.Width = 553.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'LblLocation'
+    TabOrder = 14
+  end
+  object EdtGoogleLink: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 27
+    Position.X = 96.000000000000000000
+    Position.Y = 448.000000000000000000
+    Size.Width = 601.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object CBxGoNow: TCheckBox
+    Position.X = 64.000000000000000000
+    Position.Y = 400.000000000000000000
+    TabOrder = 28
+    Text = 'Check To See Link In Browser'
+  end
+  object LBlCrowFlies: TLabel
+    Position.X = 96.000000000000000000
+    Position.Y = 512.000000000000000000
+    Size.Width = 601.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'LBlCrowFlies'
+    TabOrder = 30
+  end
+end

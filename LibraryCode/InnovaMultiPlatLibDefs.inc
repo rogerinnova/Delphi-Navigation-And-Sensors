@@ -1,0 +1,100 @@
+{
+    VER310 - Delphi Berlin
+    VER320 - Delphi Tokyo
+    VER330 - Delphi Rio
+    VER340   Delphi Sydney
+    WIN32 - Indicates that the operating environment is the Win32 API.
+    LINUX - Indicates that the operating environment is Linux
+    MSWINDOWS - Indicates that the operating environment is the MS Windows/li]
+    CONSOLE - Indicates that an application is being compiled as a console application
+    }
+
+
+{$IF  FMX.Types.FireMonkeyVersion >= 0}
+  {$DEFINE FMXApplication}
+{$ENDIF}
+{Does NOt Seem to Work}
+
+ //Delphi 10 Seatle
+{$IFDEF VER300}
+  {$DEFINE ISXE2_DELPHI}
+  {$DEFINE ISXE3_DELPHI}
+  {$DEFINE ISXE4_DELPHI}
+  {$DEFINE ISXE5_DELPHI}
+  {$DEFINE ISXE6_DELPHI}
+  {$DEFINE ISXE7_DELPHI}
+  {$DEFINE ISXE8_DELPHI}
+  {$DEFINE ISD10S_DELPHI}
+{$ENDIF}
+
+//Delphi 10.1 Berlin
+{$IFDEF VER310}
+  {$DEFINE ISXE2_DELPHI}
+  {$DEFINE ISXE3_DELPHI}
+  {$DEFINE ISXE4_DELPHI}
+  {$DEFINE ISXE5_DELPHI}
+  {$DEFINE ISXE6_DELPHI}
+  {$DEFINE ISXE7_DELPHI}
+  {$DEFINE ISXE8_DELPHI}
+  {$DEFINE ISD10S_DELPHI}
+  {$DEFINE ISD101B_DELPHI}
+{$ENDIF}
+
+//Delphi 10.2 Tokyo
+{$IFDEF VER320}
+  {$DEFINE ISXE2_DELPHI}
+  {$DEFINE ISXE3_DELPHI}
+  {$DEFINE ISXE4_DELPHI}
+  {$DEFINE ISXE5_DELPHI}
+  {$DEFINE ISXE6_DELPHI}
+  {$DEFINE ISXE7_DELPHI}
+  {$DEFINE ISXE8_DELPHI}
+  {$DEFINE ISD10S_DELPHI}
+  {$DEFINE ISD101B_DELPHI}
+  {$DEFINE ISD102T_DELPHI}
+  {$DEFINE IDCookie}
+{$ENDIF}
+
+//Delphi 10.3 Rio
+{$IFDEF VER330}
+  {$DEFINE ISXE2_DELPHI}
+  {$DEFINE ISXE3_DELPHI}
+  {$DEFINE ISXE4_DELPHI}
+  {$DEFINE ISXE5_DELPHI}
+  {$DEFINE ISXE6_DELPHI}
+  {$DEFINE ISXE7_DELPHI}
+  {$DEFINE ISXE8_DELPHI}
+  {$DEFINE ISD10S_DELPHI}
+  {$DEFINE ISD101B_DELPHI}
+  {$DEFINE ISD102T_DELPHI}
+  {$DEFINE ISD103R_DELPHI}
+  {$DEFINE IDCookie}
+{$ENDIF}
+
+//Innova Solutions Mod Patch Aug2020
+//Delphi 10.4 Sydney
+{$IFDEF VER340}
+  {$DEFINE ISXE2_DELPHI}
+  {$DEFINE ISXE3_DELPHI}
+  {$DEFINE ISXE4_DELPHI}
+  {$DEFINE ISXE5_DELPHI}
+  {$DEFINE ISXE6_DELPHI}
+  {$DEFINE ISXE7_DELPHI}
+  {$DEFINE ISXE8_DELPHI}
+  {$DEFINE ISD10S_DELPHI}
+  {$DEFINE ISD101B_DELPHI}
+  {$DEFINE ISD102T_DELPHI}
+  {$DEFINE ISD103R_DELPHI}
+  {$DEFINE ISD104S_DELPHI}
+  {$DEFINE IDCookie}
+  {$IfDef Android}
+   { $Define AUTOREFCOUNT}
+   { $Define NEXTGEN}
+  {$Endif}
+  {$IfDef IOS}
+   { $Define AUTOREFCOUNT}
+   { $Define NEXTGEN}
+  {$Endif}   
+{$ENDIF}
+
+
