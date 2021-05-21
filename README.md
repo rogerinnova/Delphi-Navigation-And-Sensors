@@ -27,5 +27,12 @@ They are
 The code for these is in the LibraryCode directory. 
 
 ## Example Projects
-The main project is targeted at the Android Phone and is included as  *AndroidExamineSensors*. It runs in Windows using "Dummy" sensors incorporated in the Mobile Sensor Library.
-Two example Windows projects demonstrates and tests the Navigation Library and its interact with Google.
+The main project is targeted at the Android Phone and is included as  *AndroidExamineSensors*. It runs in Windows using "Dummy" sensors incorporated in the Mobile Sensor Library. More documentation and explanation is available at http://www.innovasolutions.com.au/DownLoad_Android_Apps/AndroidHTML/index.html.
+
+Two example Windows projects demonstrates and tests the Navigation Library and its interaction with Google.
+
+### GoogleDirForm
+Really simple form. put in Long/Lat references and get Google Directions in Browser.
+
+### PlayGoogleTabbedForm
+Compile and run in Windows, You can put any Long/Lat co-ordinates and then view them in the Browser via Google Maps or imput another co-ordinate and get not only "Google Directions" but also the Great circle distance and bearing. A few aviation navigational aids are preprogrammed by buttons and if you have the appropiate maps you can check/compare the values given.    
