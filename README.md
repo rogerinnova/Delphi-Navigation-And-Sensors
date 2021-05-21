@@ -1,6 +1,6 @@
 # Delphi-Navigation-Google-and-Android
  Some Projects that examine Mobile Device Sensors and GPS Navigation
-##Aim of Projects 
+## Aim of Projects 
  A smart phone is potentially packed with sensors and Delphi claims to provide cross platform access to those sensors.
 
 This project was aimed at discovering this capability and what can be achieved.  A number of libraries have been developed in the process of looking at Mobile sensors. The plan was to make the application and libraries available as open source on GitHub. 
@@ -15,17 +15,17 @@ Overall the initial program aims were not achieved. The effort of adapting to th
 
 Along the way I developed some Delphi code I will continue to use and I think is worth sharing, I partially got my head around  how to do a UI on a mobile device and gathered lots of information on the actual capabilities of the sensors in those devices.    
 
-##Libraries
+## Libraries
 In playing with the GPS and other mobile sensors I coded my slowly acquired knowledge into code libraries. 
 
 They are 
-*Navigation Utilities, 
-*Mobile Sensor Utilities,
-*FMX Graphics Utilities and 
-*Android Permission Utilities.
+* Navigation Utilities, 
+* Mobile Sensor Utilities,
+* FMX Graphics Utilities and 
+* Android Permission Utilities.
 
 The code for these is in the LibraryCode directory. 
 
-##Example Projects
+## Example Projects
 The main project is targeted at the Android Phone and is included as  *AndroidExamineSensors*. It runs in Windows using "Dummy" sensors incorporated in the Mobile Sensor Library.
 Two example Windows projects demonstrates and tests the Navigation Library and its interact with Google.
