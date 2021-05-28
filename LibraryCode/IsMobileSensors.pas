@@ -233,6 +233,14 @@ Type
     FLastValue: TLocationCoord2D;
     Procedure LocationTimerEvent(Sender: TObject);
   protected
+    function GetAccuracy: TLocationAccuracy;  override;
+    function GetDistance: TLocationDistance;  override;
+    function DoGetInterface(const IID: TGUID; out Obj): HResult; override;
+    function GetPowerConsumption: TPowerConsumption;  override;
+    procedure SetAccuracy(const Value: TLocationAccuracy);  override;
+    procedure SetDistance(const Value: TLocationDistance); override;
+    procedure DoLocationChangeType; override;
+    procedure DoOptimize;  override;
     function DoStart: Boolean; override;
     procedure DoStop; override;
     function GetState: TSensorState; override;
@@ -264,7 +272,8 @@ Type
   protected
     function DoStart: Boolean; override;
     procedure DoStop; override;
-    // function GetState: TSensorState; override;
+    function GetState: TSensorState; override;
+    function DoGetInterface(const IID: TGUID; out Obj): HResult; override;
     function GetTimeStamp: TDateTime; override;
     function GetMotionSensorType: TMotionSensorType; override;
     function GetUpdateInterval: Double; override;
@@ -1287,6 +1296,12 @@ begin
   inherited;
 end;
 
+function TDummyWindowsMotionSensor.DoGetInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  Result:=  0;
+end;
+
 function TDummyWindowsMotionSensor.DoStart: Boolean;
 begin
   Inherited;
@@ -1321,6 +1336,11 @@ end;
 function TDummyWindowsMotionSensor.GetMotionSensorType: TMotionSensorType;
 begin
   Result := TMotionSensorType.Accelerometer3D;
+end;
+
+function TDummyWindowsMotionSensor.GetState: TSensorState;
+begin
+  Result := TSensorState.Ready;
 end;
 
 function TDummyWindowsMotionSensor.GetTimeStamp: TDateTime;
@@ -1418,6 +1438,23 @@ begin
   inherited;
 end;
 
+function TDummyWindowsLocationSensor.DoGetInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  Result:=0;
+end;
+
+procedure TDummyWindowsLocationSensor.DoLocationChangeType;
+begin
+  inherited;
+end;
+
+procedure TDummyWindowsLocationSensor.DoOptimize;
+begin
+  inherited;
+
+end;
+
 function TDummyWindowsLocationSensor.DoStart: Boolean;
 begin
   Inherited;
@@ -1429,6 +1466,11 @@ procedure TDummyWindowsLocationSensor.DoStop;
 begin
   inherited;
   FRandomTimer.Enabled := false;
+end;
+
+function TDummyWindowsLocationSensor.GetAccuracy: TLocationAccuracy;
+begin
+   Result:=0.3;
 end;
 
 function TDummyWindowsLocationSensor.GetAuthorized: TAuthorizationType;
@@ -1447,6 +1489,11 @@ begin
     TCustomLocationSensor.TProperty.TrueHeading];
 end;
 
+function TDummyWindowsLocationSensor.GetDistance: TLocationDistance;
+begin
+    Result:=3;
+end;
+
 function TDummyWindowsLocationSensor.GetDoubleProperty
   (Prop: TCustomLocationSensor.TProperty): Double;
 begin
@@ -1456,6 +1503,11 @@ end;
 function TDummyWindowsLocationSensor.GetLocationSensorType: TLocationSensorType;
 begin
   Result := TLocationSensorType.Gps;
+end;
+
+function TDummyWindowsLocationSensor.GetPowerConsumption: TPowerConsumption;
+begin
+  Result:=TPowerConsumption.pcMedium;
 end;
 
 function TDummyWindowsLocationSensor.GetState: TSensorState;
@@ -1605,6 +1657,20 @@ end;
 
   end;
 *)
+
+procedure TDummyWindowsLocationSensor.SetAccuracy(
+  const Value: TLocationAccuracy);
+begin
+  inherited;
+
+end;
+
+procedure TDummyWindowsLocationSensor.SetDistance(
+  const Value: TLocationDistance);
+begin
+  inherited;
+
+end;
 
 procedure TDummyWindowsLocationSensor.SetDoubleProperty(Val: Double;
   Prop: TCustomLocationSensor.TProperty);

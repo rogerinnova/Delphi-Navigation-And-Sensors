@@ -109,7 +109,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Width = 60.000000000000000000
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
-              Visible = True
             end
             object SpBtnResetAll: TSpeedButton
               Align = Left
@@ -132,6 +131,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Speed'
+            TabOrder = 1
           end
           object LblPos: TLabel
             Align = Top
@@ -143,6 +143,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 20.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Current Position'
+            TabOrder = 2
           end
           object LblStartPos: TLabel
             Align = MostBottom
@@ -154,6 +155,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Start Location'
+            TabOrder = 3
           end
           object LblDistance: TLabel
             Align = Bottom
@@ -165,6 +167,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Distance'
+            TabOrder = 4
           end
           object LblHeading: TLabel
             Align = Top
@@ -178,6 +181,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Heading'
+            TabOrder = 5
           end
           object LblBearing: TLabel
             Align = Bottom
@@ -189,6 +193,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Bearing'
+            TabOrder = 6
           end
           object LblTotalDist: TLabel
             Align = Bottom
@@ -200,6 +205,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Total Distance'
+            TabOrder = 7
           end
         end
         object TbItemPicture: TTabItem
@@ -240,7 +246,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'speedbuttonstyle'
-              Visible = True
             end
             object SpBtnPicNext: TSpeedButton
               Action = NextTabAction1
@@ -252,7 +257,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Width = 60.000000000000000000
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
-              Visible = True
             end
           end
           object PnlMap: TPanel
@@ -392,7 +396,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'speedbuttonstyle'
-              Visible = True
             end
             object BtnNext2: TSpeedButton
               Action = NextTabAction1
@@ -404,7 +407,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Width = 60.000000000000000000
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
-              Visible = True
             end
           end
           object LblDistance2: TLabel
@@ -417,6 +419,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Distance'
+            TabOrder = 1
           end
           object LblStartPos2: TLabel
             Align = MostBottom
@@ -428,6 +431,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Start Point'
+            TabOrder = 2
           end
           object LblPos2: TLabel
             Align = Top
@@ -439,6 +443,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Snapshot'
+            TabOrder = 3
           end
           object LblSpeed2: TLabel
             Align = Top
@@ -452,6 +457,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Speed Snapshot'
+            TabOrder = 4
           end
           object LblBearing2: TLabel
             Align = Bottom
@@ -463,6 +469,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Bearing'
+            TabOrder = 5
           end
           object LblHeading2: TLabel
             Align = Top
@@ -476,6 +483,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Heading Snapshot'
+            TabOrder = 6
           end
         end
         object TbItemRecords: TTabItem
@@ -518,7 +526,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.PlatformDefault = False
               StyleLookup = 'speedbuttonstyle'
               TextSettings.FontColor = claCrimson
-              Visible = True
             end
             object SpBtnSaveAllLoc: TSpeedButton
               Align = MostRight
@@ -542,8 +549,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             Size.Height = 437.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
-            Viewport.Width = 325.000000000000000000
-            Viewport.Height = 429.000000000000000000
+            Viewport.Width = 333.000000000000000000
+            Viewport.Height = 437.000000000000000000
           end
         end
       end
@@ -570,7 +577,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 485.000000000000000000
         Size.PlatformDefault = False
         TabHeight = 49.000000000000000000
-        TabIndex = 3
+        TabIndex = 2
         TabOrder = 0
         TabPosition = None
         OnChange = TbCtrlChangeUpdate
@@ -608,6 +615,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Sample Count'
+            TabOrder = 0
           end
           object LblHomeInBlack: TLabel
             Align = Top
@@ -619,6 +627,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 20.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Result'
+            TabOrder = 1
           end
           object LblBtmHomein: TLabel
             Align = Bottom
@@ -630,6 +639,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Distance from First Location'
+            TabOrder = 2
           end
           object LblBtm2HomeIn: TLabel
             Align = Bottom
@@ -641,6 +651,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Last Location'
+            TabOrder = 3
           end
           object LblHomeInMinor: TLabel
             Align = Top
@@ -654,6 +665,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Varience'
+            TabOrder = 4
           end
           object LblBtm1HomeIn: TLabel
             Align = Bottom
@@ -665,6 +677,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Distance Frm Last Location'
+            TabOrder = 5
           end
           object TBarTopHomeIn: TToolBar
             Align = MostTop
@@ -693,7 +706,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
               TextSettings.FontColor = claCrimson
-              Visible = True
             end
           end
           object TBarBotHomeIn: TToolBar
@@ -769,7 +781,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.PlatformDefault = False
               StyleLookup = 'speedbuttonstyle'
               TextSettings.FontColor = claCrimson
-              Visible = True
             end
             object SpBtnAveSnapNxt: TSpeedButton
               Action = NextTabAction2
@@ -783,7 +794,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
               TextSettings.FontColor = claCrimson
-              Visible = True
             end
           end
           object LblCurentLocationText: TLabel
@@ -796,6 +806,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Actual  Location'
+            TabOrder = 1
           end
           object LblAverageLocationText: TLabel
             Align = Bottom
@@ -807,6 +818,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Average Location'
+            TabOrder = 2
           end
           object LblMetersPerSecondDetail: TLabel
             Align = Top
@@ -820,6 +832,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'No of Counts'
+            TabOrder = 3
           end
           object LblAveTimeSampling: TLabel
             Align = Top
@@ -831,6 +844,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Time Sampling'
+            TabOrder = 4
           end
           object LblNoOfSamples: TLabel
             Align = Top
@@ -844,6 +858,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.FontColor = claCrimson
             TextSettings.HorzAlign = Center
             Text = 'Total  Samples'
+            TabOrder = 5
           end
           object LblLocationDev: TLabel
             Align = Bottom
@@ -855,6 +870,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Loc Dev'
+            TabOrder = 6
           end
           object LblAveSpeed: TLabel
             Align = Top
@@ -866,6 +882,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Ave Speed'
+            TabOrder = 7
           end
           object LblAveHding: TLabel
             Align = Top
@@ -877,6 +894,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'Ave Heading'
+            TabOrder = 8
           end
           object LblAveAlt: TLabel
             Align = Bottom
@@ -888,6 +906,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             TextSettings.Font.Size = 15.000000000000000000
             TextSettings.HorzAlign = Center
             Text = 'AveAlt'
+            TabOrder = 9
           end
           object ToolBar3: TToolBar
             Align = MostBottom
@@ -929,7 +948,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
           CustomIcon = <
             item
             end>
-          IsSelected = False
+          IsSelected = True
           Size.Width = 8.000000000000000000
           Size.Height = 8.000000000000000000
           Size.PlatformDefault = False
@@ -980,7 +999,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
               StyleLookup = 'speedbuttonstyle'
-              Visible = True
             end
             object SpeedButton2: TSpeedButton
               Action = NextTabAction2
@@ -992,7 +1010,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.Width = 60.000000000000000000
               Size.Height = 48.000000000000000000
               Size.PlatformDefault = False
-              Visible = True
             end
           end
           object ToolBarZoomMeasure: TToolBar
@@ -1067,7 +1084,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
           CustomIcon = <
             item
             end>
-          IsSelected = True
+          IsSelected = False
           Size.Width = 8.000000000000000000
           Size.Height = 8.000000000000000000
           Size.PlatformDefault = False
@@ -1103,7 +1120,6 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
               Size.PlatformDefault = False
               StyleLookup = 'speedbuttonstyle'
               TextSettings.FontColor = claCrimson
-              Visible = True
             end
             object SpBtnSaveAve: TSpeedButton
               Align = MostRight
@@ -1127,8 +1143,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             Size.Height = 437.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
-            Viewport.Width = 325.000000000000000000
-            Viewport.Height = 429.000000000000000000
+            Viewport.Width = 333.000000000000000000
+            Viewport.Height = 437.000000000000000000
           end
         end
       end
@@ -1186,8 +1202,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 437.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
-        Viewport.Width = 325.000000000000000000
-        Viewport.Height = 429.000000000000000000
+        Viewport.Width = 333.000000000000000000
+        Viewport.Height = 437.000000000000000000
       end
     end
     object TIMap: TTabItem
@@ -1259,6 +1275,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         TextSettings.FontColor = claBlue
         TextSettings.HorzAlign = Center
         Text = 'LblTestStart'
+        TabOrder = 1
       end
       object LblTestEnd: TLabel
         Align = Top
@@ -1272,6 +1289,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         TextSettings.FontColor = claBlue
         TextSettings.HorzAlign = Center
         Text = 'LblTestEnd'
+        TabOrder = 2
       end
       object LblTestDistance: TLabel
         Align = Top
@@ -1285,6 +1303,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         TextSettings.FontColor = claBlue
         TextSettings.HorzAlign = Center
         Text = 'LblTestDistance'
+        TabOrder = 3
       end
       object LblBackAgain: TLabel
         Align = Top
@@ -1298,6 +1317,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         TextSettings.FontColor = claBlue
         TextSettings.HorzAlign = Center
         Text = 'LblBackAgain'
+        TabOrder = 4
       end
       object LblTestBearing: TLabel
         Align = Top
@@ -1311,6 +1331,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         TextSettings.FontColor = claBlue
         TextSettings.HorzAlign = Center
         Text = 'LblTestBearing'
+        TabOrder = 5
       end
       object LblReversBearing: TLabel
         Align = Top
@@ -1324,6 +1345,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         TextSettings.FontColor = claBlue
         TextSettings.HorzAlign = Center
         Text = 'LblReversBearing'
+        TabOrder = 6
       end
       object MmoSamplingDetails: TMemo
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
@@ -1333,8 +1355,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 236.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 7
-        Viewport.Width = 325.000000000000000000
-        Viewport.Height = 228.000000000000000000
+        Viewport.Width = 333.000000000000000000
+        Viewport.Height = 236.000000000000000000
       end
     end
   end

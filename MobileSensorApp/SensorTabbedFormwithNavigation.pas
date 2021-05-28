@@ -446,29 +446,18 @@ Button: TMouseButton; Shift: TShiftState; X, Y: Single);
 Var
   Loc: TPointF;
 begin
-  Loc := TPointF.Create(X, Y);
   if Sender = Image1 then
   Begin
-//    if Image1.Canvas.Scale < 1 then
-//    Begin
-      // Do not understand why but it seems Scale <1 is different
-//    End
-//    Else
-//      Loc := Loc / Image1.Canvas.Scale;
+    Loc := TIsGraphics.LocationAsDraw(TPointf.create(X, Y),Image1.Bitmap.Canvas);
     TNavGraphics.RelocateNavPointFromMapRef(FOriginMapOfPos, FScaleMapOfPos,
-      Loc, FCenterOffsetMapOfPos,Image1.Canvas.Scale);
+      Loc, FCenterOffsetMapOfPos);
     Dec(FLastCount, 2);
   End
   Else if Sender = Image2 then
   Begin
-//    if Image2.Canvas.Scale < 1 then
-//    Begin
-      // Do not understand why but it seems Scale <1 is different
-//    End
-//    Else
-//      Loc := Loc / Image2.Canvas.Scale;
+    Loc := TIsGraphics.LocationAsDraw(TPointf.create(X, Y),Image2.Bitmap.Canvas);
     TNavGraphics.RelocateNavPointFromMapRef(FOriginMapMesr, FScaleMapMesr, Loc,
-      FCenterOffsetMapMesr,Image2.Canvas.Scale);
+      FCenterOffsetMapMesr);
     Dec(FLastCountMeasure, 2);
   End;
   TbCtrlChangeUpdate(Sender);
@@ -578,7 +567,7 @@ begin
     Begin
       FListOfAllProgress.Add(Current);
       FListOfSampleTimes.Add(Now);
-      AddToMmoTrkLocations(' ' + Current.LocatationText(2));
+      AddToMmoTrkLocations(' ' + Current.LocatationText(1));
       LastTxtIndex := FAllLocationStringList.Add
         (FormatDateTime('dd/mm/yy hh:nn,ss.zzz,', Now) + 'Seconds' +
         Current.LocatationCsv(8) + ',' + FormatFloat('0.0',
@@ -1021,8 +1010,11 @@ Var
   // LOrigin: RNavigateLongLat;
 
 begin
-  LblMeasurePicTop.Text := 'Plot ' + IntToStr(Length(FSampleResultArray)) +
-    ' Averages';
+  if FOriginMapMesr.NotNull then
+    LblMeasurePicTop.Text:=FOriginMapMesr.LocatationText(2)
+  else
+    LblMeasurePicTop.Text := 'Plot ' + IntToStr(Length(FSampleResultArray)) +
+      ' Averages';
   ReDraw := TIsGraphics.SetNewImageBitMap(Image2, $FFFFFF) or
     (High(FSampleResultArray) > FLastCountMeasure);
   if ReDraw then
@@ -1030,6 +1022,7 @@ begin
     TotalDistance := 0.0;
     ListOfPos := TList<RNavigateLongLat>.Create;
     Try
+      LblMeasurePicTop.Text:=FOriginMapMesr.LocatationText(2);
       for i := 0 to High(FSampleResultArray) do
       Begin
         ListOfPos.Add(FSampleResultArray[i].NavLoc);
@@ -1080,6 +1073,8 @@ begin
     (FListOfProgress.Count > FLastCount);
   if ReDraw then
   Begin
+     if FOriginMapOfPos.NotNull then
+        LblPicTitle.Text:=FOriginMapOfPos.LocatationText(2);
     // FOriginMapOfPos.SetToNull;
     FLastCount := FListOfProgress.Count;
     FScaleMapOfPos := TNavGraphics.GetScale(Image1.Bitmap.Canvas,

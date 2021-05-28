@@ -283,7 +283,7 @@ begin
     lpDirectory, // pointer to string that specifies default directory
     // whether file is shown when opened
     SW_RESTORE);
-  Inc(Return)
+  Inc(Return);
 end;
 
 

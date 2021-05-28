@@ -19,6 +19,8 @@ Type
     Class Procedure ClearCanvas(ACanvas: TCanvas);
     Class Function PointOutsideBounds(ACanvas: TCanvas;
       APoint: TPointf): Boolean;
+    Class Function RectOutsideBounds(ACanvas: TCanvas;
+      ARect: TRectf): Boolean;
     Class Procedure DrawHorizontalScaleBar(ACanvas: TCanvas; ABar: Single;
       AOrigin: TPointf; Const ATxt: String);
     Class Procedure DrawVerticalScaleBar(ACanvas: TCanvas; ABar: Single;
@@ -29,6 +31,12 @@ Type
       AAlignment: TTextAlign = TTextAlign.Center; ADoFill: Boolean = true;
       ADoStroke: Boolean = False);
   Public
+    Class Procedure DrawDot(ALocation: TPointf; ACanvas: TCanvas;
+      ASolid: Boolean = true);
+    Class Function LocationAsDraw(AMouseLocation: TPointf;
+      ACanvas: TCanvas): TPointf;
+    Class Function LocationAsMouse(ADrawLocation: TPointf;
+      ACanvas: TCanvas): TPointf;
     Class Function SetNewImageBitMap(AImage: TImage;
       ABackGround: TAlphaColor = $FFFFFF): Boolean;
   End;
@@ -46,7 +54,7 @@ Type
       ALocationList: TList<RNavigateLongLat>; Var Origin: RNavigateLongLat;
       Out CenterOffset: TPointf): TPointf;
     Class Procedure RelocateNavPointFromMapRef(Var ALatLongLocationRef
-      : RNavigateLongLat; AScaleOfMap, ANewPosCanvas, AOrigRefOffset: TPointf;  AScaleOfCanvas:Single);
+      : RNavigateLongLat; AScaleOfMap, ANewPosCanvas, AOrigRefOffset: TPointf);
     Class Procedure DrawLocationsOnCanvas(ACanvas: TCanvas;
       ALocationList: TList<RNavigateLongLat>; AOrigin: RNavigateLongLat;
       AScale, ACenterOffset: TPointf; AAddScale: Integer = 1 { Horizontal };
@@ -61,7 +69,6 @@ class procedure TNavGraphics.AddScale(ACanvas: TCanvas; AScale: TPointf;
   AHorizontal: Boolean; AAltPos: Boolean = False);
 Var
   s, TxtLead: String;
-  TstVal,
   Bar, MaxBar, CanvasScale: Single;
   Origin: TPointf;
   Pwr: Integer;
@@ -119,13 +126,11 @@ begin
   else
     s := '';
   end;
-//   Origin:=TPointf.Create(ACanvas.width ,ACanvas.height);
+  // Origin:=TPointf.Create(ACanvas.width ,ACanvas.height);
   if AAltPos then
   Begin
-    TstVal:= ACanvas.width;
-    TstVal:=TstVal/Canvasscale;
     if AHorizontal then
-      Origin := TPointf.Create(ACanvas.width / CanvasScale/ 2,
+      Origin := TPointf.Create(ACanvas.width / CanvasScale / 2,
         1 * ACanvas.height / CanvasScale / 10)
     else
       Origin := TPointf.Create(1 * ACanvas.width / CanvasScale / 10,
@@ -218,7 +223,8 @@ begin
           Begin
             PrevJitterLoc := ALocationList[i];
             Nxt := NavAsPoint(PrevJitterLoc, AScale, AOrigin, ACenterOffset);
-            Path.LineTo(Nxt);
+            if not PointOutsideBounds(ACanvas,Nxt) then
+                                           Path.LineTo(Nxt);
             Dots.Add(PrevJitterLoc);
           End;
         End
@@ -246,7 +252,8 @@ begin
           ThisNodeRect := NodeRect;
           ThisNodeRect.Offset(NavAsPoint(Dots[i], AScale, AOrigin,
             ACenterOffset));
-          Path.AddEllipse(ThisNodeRect);
+            if not RectOutsideBounds(ACanvas,ThisNodeRect) then
+              Path.AddEllipse(ThisNodeRect);
         end;
       ACanvas.Stroke.Thickness := 1;
       ACanvas.Fill.Color := TAlphaColorRec.Crimson;
@@ -307,8 +314,6 @@ begin
   end;
 
   Result := TPointf.Create(-0.01, -0.01);
-  AvailX := ACanvas.width;
-  AvailY := ACanvas.height;
   if ACanvas.Scale < 1 then
   Begin
     AvailX := ACanvas.width;
@@ -388,14 +393,7 @@ end;
 class function TNavGraphics.NavAsPoint(ALocation: RNavigateLongLat;
   AScale: TPointf; AOrigin: RNavigateLongLat; AOffset: TPointf): TPointf;
 // Returns a scaled plot point TPointf from a Navigation Reference
-{$IFDEF msWindows}
-Var
-  Tst: Double;
 begin
-  // Tst := AScale.X * Sin(AOrigin.LatAsRad);
-{$ELSE}
-begin
-{$ENDIF}
   // Result.X := (ALocation.Longitude - AOrigin.Longitude) * AScale.X*Abs(Sin(AOrigin.LatAsRad));
   Result.X := (ALocation.Longitude - AOrigin.Longitude) * AScale.X;
   // Scale X is adjusted for Latitude
@@ -405,28 +403,19 @@ begin
 end;
 
 class procedure TNavGraphics.RelocateNavPointFromMapRef(var ALatLongLocationRef
-  : RNavigateLongLat; AScaleOfMap,ANewPosCanvas, AOrigRefOffset: TPointf;  AScaleOfCanvas:Single);
+  : RNavigateLongLat; AScaleOfMap, ANewPosCanvas, AOrigRefOffset: TPointf);
 // Takes a RNavigateLongLat Record and calculates a new value based on the original map x,y pixel reference, the map scale and a desired position given in Map x,y pixel coordinates
 
 Var
   Shift: TPointf;
 begin
   Shift.X := ANewPosCanvas.X;
-  Shift.y := -ANewPosCanvas.y;
-  If AScaleOfCanvas < 1 then
-    Begin
-      // Do not understand why but it seems Scale <1 is different
-    End
-    Else
-      Shift := Shift / AScaleOfCanvas;
-
-
-  Shift := -ANewPosCanvas;
+  Shift.y := ANewPosCanvas.y;
+  Shift := -Shift;
   Shift.Offset(AOrigRefOffset);
   ALatLongLocationRef.Longitude := ALatLongLocationRef.Longitude - Shift.X /
-    AScaleOfMap.X /
-  // Sin(AOriginOfMap.LatAsRad);
-    Cos(ALatLongLocationRef.LatAsRad);
+    AScaleOfMap.X; // * Cos(ALatLongLocationRef.LatAsRad);
+  // Because AScaleOfMap.X incorporates adjustment
   ALatLongLocationRef.Latitude := ALatLongLocationRef.Latitude + Shift.y /
     AScaleOfMap.y;
 end;
@@ -453,7 +442,6 @@ begin
       ScaledHeight := ScaledHeight / CanvasScale;
       ScaledWidth := ScaledWidth / CanvasScale;
     End;
-    TextHeightLimit := ACanvas.height;
     TextRect.Create(ACanvas.Offset, ScaledWidth,
       ScaledHeight * AFractionPerLine);
     TextHeightLimit := ScaledHeight * AFractionFromTop;
@@ -508,6 +496,46 @@ begin
     // ACanvas.EndScene;
   Finally
     PathD.Free;
+  End;
+end;
+
+class procedure TIsGraphics.DrawDot(ALocation: TPointf; ACanvas: TCanvas;
+  ASolid: Boolean = true);
+Var
+  Path: TPathData;
+  NodeRect: TRectf;
+  Brush: TBrush;
+  Stroke: TStrokeBrush;
+begin
+  if ACanvas = nil then
+    Exit;
+
+  NodeRect.Create(-5, -5, 5, 5);
+  NodeRect.Offset(ALocation);
+  Path := TPathData.Create;
+  Try
+    if Not RectOutsideBounds(ACanvas,NodeRect) then
+      Begin
+       Path.AddEllipse(NodeRect);
+       if ASolid then
+          Brush := TBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black)
+        else
+          Brush:=nil;
+       Stroke := TStrokeBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black);
+       try
+         Stroke.Thickness := 2;
+         ACanvas.BeginScene;
+         if ASolid then
+           ACanvas.FillPath(Path, 0.5, Brush);
+         ACanvas.DrawPath(Path, 0.5,Stroke);
+         ACanvas.EndScene;
+       finally
+         Brush.Free;
+         Stroke.Free;
+       end;
+      End;
+  Finally
+    Path.Free;
   End;
 end;
 
@@ -642,64 +670,40 @@ begin
   end;
 end;
 
+class function TIsGraphics.LocationAsDraw(AMouseLocation: TPointf;
+  ACanvas: TCanvas): TPointf;
+begin
+  Result := AMouseLocation;
+  if ACanvas <> nil then
+    if ACanvas.Scale > 1 then
+      Result := AMouseLocation / ACanvas.Scale;
+end;
 
-
-
-// begin
-// BarTck := ABar / 20;
-// SvFontSz := ACanvas.Font.Size;
-// PathD := TPathData.Create;
-// try
-// Nxt := TPointf.Create(AOrigin.X - BarTck, AOrigin.y - ABar / 2);
-// PathD.MoveTo(Nxt);
-// Nxt.Offset(2 * BarTck, 0.0);
-// PathD.LineTo(Nxt);
-// Nxt.Offset(-BarTck, 0.0);
-// PathD.MoveTo(Nxt);
-// Nxt.Offset(0.0, ABar);
-// PathD.LineTo(Nxt);
-// Nxt.Offset(-BarTck, 0.0);
-// PathD.MoveTo(Nxt);
-// Nxt.Offset(2 * BarTck, 0.0);
-// PathD.LineTo(Nxt);
-// ACanvas.BeginScene;
-// ACanvas.DrawPath(PathD, 1.0);
-// ACanvas.EndScene;
-// if ATxt <> '' then
-// Begin
-// PathO := TPath.Create(Nil { ACanvas   .owner } );
-// try
-// SizeCanvasFont(ACanvas, ABar * 0.9, 4 * BarTck, ATxt);
-// TextRect.Create(AOrigin, BarTck * 5, ABar);
-// TextRect.Offset(BarTck * 6, ABar / 2);
-// ACanvas.TextToPath(PathO.Data, TextRect, ATxt, False,
-// TTextAlign.Center);
-// PathO.RotationAngle := 90;
-// ACanvas.BeginScene;
-// ACanvas.DrawPath(PathO.Data, 1.0);
-// ACanvas.EndScene;
-// finally
-// PathO.Free;
-// end;
-// End;
-
-// finally
-// PathD.Free;
-// ACanvas.Font.Size := SvFontSz;
-// end;
-// end;
+class function TIsGraphics.LocationAsMouse(ADrawLocation: TPointf;
+  ACanvas: TCanvas): TPointf;
+begin
+  Result := ADrawLocation;
+  if ACanvas <> nil then
+    if ACanvas.Scale > 1 then
+      Result := ADrawLocation * ACanvas.Scale;
+end;
 
 class function TIsGraphics.PointOutsideBounds(ACanvas: TCanvas;
   APoint: TPointf): Boolean;
+Var
+  Scale:single;
 begin
   Result := False;
+  Scale:=ACanvas.Scale;
+  if Scale<1 then
+     Scale:=1;
   if APoint.X < ACanvas.Offset.X then
     Result := true
   Else if APoint.y < ACanvas.Offset.y then
     Result := true
-  Else if APoint.X > (ACanvas.Offset.X + ACanvas.width / ACanvas.Scale) then
+  Else if APoint.X > (ACanvas.Offset.X + ACanvas.width / Scale) then
     Result := true
-  Else if APoint.y > (ACanvas.Offset.y + ACanvas.height / ACanvas.Scale) then
+  Else if APoint.y > (ACanvas.Offset.y + ACanvas.height / Scale) then
     Result := true;
 end;
 
@@ -718,6 +722,25 @@ begin
   APath.LineTo(Nxt);
   Nxt.Offset(-ARect.width, 0.0);
   APath.LineTo(Nxt);
+end;
+
+class function TIsGraphics.RectOutsideBounds(ACanvas: TCanvas;
+  ARect: TRectf): Boolean;
+Var
+  Scale:single;
+begin
+  Result := False;
+  Scale:=ACanvas.Scale;
+  if Scale<1 then
+     Scale:=1;
+  if ARect.Left < ACanvas.Offset.X then
+    Result := true
+  Else if ARect.top < ACanvas.Offset.y then
+    Result := true
+  Else if ARect.Left > (ACanvas.Offset.X + ACanvas.width / Scale) then
+    Result := true
+  Else if ARect.Bottom > (ACanvas.Offset.y + ACanvas.height / Scale) then
+    Result := true;
 end;
 
 class function TIsGraphics.SetNewImageBitMap(AImage: TImage;
@@ -754,14 +777,12 @@ Var
 
 begin
   Resize(Hght, Lenth);
-  while (Hght  < AHeightLimit * 0.99) and
-    (Lenth  < ALengthLimit * 0.99) do
+  while (Hght < AHeightLimit * 0.99) and (Lenth < ALengthLimit * 0.99) do
   Begin
     ACanvas.Font.Size := ACanvas.Font.Size * 1.1;
     Resize(Hght, Lenth);
   End;
-  while (Hght  > AHeightLimit * 0.999) or
-    (Lenth > ALengthLimit * 0.999) do
+  while (Hght > AHeightLimit * 0.999) or (Lenth > ALengthLimit * 0.999) do
   Begin
     ACanvas.Font.Size := ACanvas.Font.Size * 0.95;
     Resize(Hght, Lenth);
