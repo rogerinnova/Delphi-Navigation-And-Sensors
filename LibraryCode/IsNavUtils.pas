@@ -89,7 +89,7 @@ Function CalDoubleStdDevFromSumOfSquares(ARunningAveageSumOfSqrs: Double;
 Function MtrsPerDegreeLongAdjustForLatitude(ALatitudeDegree: Double): Double;
 
 Const
-  // Radius of Earth =~~ 6,378 Km
+  // Radius of Earth =~~ 6,371Km  6,357km Polar 6,378Km Equatorial
   EarthRad: Double = 6371008.8;
   MtrsPerDegree: Double = Pi * 6371008.8 / 180;
   // Radius of earth in Meters >> Meters Circumference per radian

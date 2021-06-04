@@ -2661,7 +2661,10 @@ begin
     if isNaN(Az) then
       TwoDOnly := True
     else
+     begin
+      TwoDOnly := False;
       z := Az;
+     end;
     if isNaN(Ax) then
       raise Exception.Create('X Value is Nan');
     x := Ax;

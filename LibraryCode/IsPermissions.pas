@@ -63,7 +63,9 @@ Procedure PermissionsGranted(AReq: PmsmSet; ADlgPasses, ADlgFails: Boolean;
 
 }
 
-(* unit Androidapi.JNI.Os;
+(* https://developer.android.com/reference/android/Manifest.permission
+
+  unit Androidapi.JNI.Os;    in version \source\rtl\android\
   ACCESS_CHECKIN_PROPERTIES: JString read _GetACCESS_CHECKIN_PROPERTIES;
   ACCESS_COARSE_LOCATION: JString read _GetACCESS_COARSE_LOCATION;
   ACCESS_FINE_LOCATION: JString read _GetACCESS_FINE_LOCATION;
