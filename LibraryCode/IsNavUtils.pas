@@ -7,7 +7,7 @@ interface
 
 uses Math, System.SysUtils, System.Types, System.UITypes, System.Classes,
 {$IFDEF MSWINDOWS}
-  WinApi.Windows, WinApi.ShellAPI,
+  WinApi.Windows, WinApi.ShellAPI, ansistrings,
 {$ENDIF}
   System.Variants;
 
@@ -87,6 +87,8 @@ Function CalDoubleStdDevFromSumOfSquares(ARunningAveageSumOfSqrs: Double;
   ANoOfSamples: Integer): Double;
 
 Function MtrsPerDegreeLongAdjustForLatitude(ALatitudeDegree: Double): Double;
+
+Function RealFrmDegreeText(AText:String):double;
 
 Const
   // Radius of Earth =~~ 6,371Km  6,357km Polar 6,378Km Equatorial
@@ -168,6 +170,174 @@ Begin
   else
     Result := TextDegreeMinuteSecondFrmDec(ARadians * 180 / Pi, AAccuracy);
 End;
+
+{Derived rom ISArrayLib}
+type
+TArrayOfUnicodeStrings = Array of String;
+TArrayOfAnsiStrings =Array of Ansistring;
+
+function GetNumericArrayFromAlphaNumericString(AData: String;
+  ASepControls: Boolean; ASigns: Boolean; ADollars: Boolean)
+  : TArrayOfUnicodeStrings;
+{ Extracts Array ['7777','88'] from
+  junk7777more junk88fg }
+{ ASepControls splits on spaces lf etc if Asigns then signs are numeric ditto Adollars
+  {Splits array into numerics and ignors non numerics - Removes nulls }
+
+{ sub } function GetFlag(AChar: Char): Integer;
+  begin
+    case AChar of
+      'A' .. 'Z', 'a' .. 'z':
+        Result := 1;
+      '0' .. '9':
+        Result := 2;
+      '.':
+        Result:=3; // Numeric if 66.66 or .88 but not stops. Here
+      '+', '-':
+        if ASigns then
+          Result := 2
+        else
+          Result := 0;
+      '$':
+        if ADollars then
+          Result := 2
+        else
+          Result := 0;
+    else
+      Result := 0; // Non Alpha numeric
+    end;
+  end;
+{ sub } function UnMatchedFlags(var AFlgA, AFlgB: Integer): Boolean;
+  begin
+    if AFlgB=3 then
+     if AFlgA=0 then
+       Result:=true
+     else
+     begin
+        Result:=Not (AFlgA=2);
+        if Not Result then
+         AFlgB:=2;
+     end
+    else
+    Result := AFlgA <> AFlgB;
+    if Result and not ASepControls then
+      if (AFlgA < 2) and (AFlgB < 2) then
+        Result := false;
+    if Result then  // Numeric if 66.66 or .88 but not stops. Here
+      if AflgA=3 then
+        Result:= not (AFlgB=2);
+    AFlgA := AFlgB;
+  end;
+
+var
+  Rcrds, cursz: Integer;
+  NextChar: PChar;
+  AlphaFlg, NxtAlphaFlag, TypeFlag,TstLen, i: Integer;
+  S: String;
+begin
+  SetLength(Result, 0);
+  if AData = '' then
+    exit;
+
+  Rcrds := 1;
+  cursz := 0;
+  NextChar := PChar(AData);
+  AlphaFlg := GetFlag(Char(NextChar[0]));
+  TstLen:=length(Adata);
+  while Pointer(NextChar) <> nil do
+  begin
+    S := '';
+    i := 0;
+    if Rcrds >= cursz then
+    begin
+      inc(cursz, 5);
+      SetLength(Result, cursz);
+    end;
+    while (S = '') and (NextChar[0] <> Char(0)) and (NextChar <> nil) do
+    begin
+      NxtAlphaFlag := GetFlag(Char(NextChar[i + 1]));
+      TypeFlag := AlphaFlg;
+      if UnMatchedFlags(AlphaFlg, NxtAlphaFlag) then
+      begin
+        S := Copy(NextChar, 0, i + 1);
+        S := Trim(S);
+        if (S <> '') and (TypeFlag = 2) then
+        begin
+          Result[Rcrds - 1] := S;
+          inc(Rcrds, 1);
+        end;
+        inc(NextChar, i + 1);
+        TstLen:=Length(NextChar);
+        AlphaFlg := GetFlag(Char(NextChar[0]));
+        i := 0;
+      end
+      else
+      inc(i);
+       if i>TstLen then
+         NextChar:='';
+    end;
+    if Length(S) = 0 then
+    begin
+      S := NextChar;
+      S := Trim(S);
+      if Length(S) > 0 then
+        Result[Rcrds - 1] := S
+      else
+        Dec(Rcrds);
+      NextChar := nil;
+    end;
+  end;
+  SetLength(Result, Rcrds);
+end;
+
+Function RealFrmDegreeText(AText:String):double;
+var
+  ValueArray:TArrayOfUnicodeStrings;
+  Deg,min,sec:double;
+  tstneg,lastno:integer;
+  Negative:Boolean;
+  LText:string;
+Begin
+  try
+   Result:=0.0;
+   Trim(AText);
+   if AText<>'' then
+      Result:=StrToFloat(AText);
+  Except
+    min:=0.0;
+    sec:=0.0;
+    ValueArray:=GetNumericArrayFromAlphaNumericString(AText,false,true,false);
+    if Length(ValueArray)>0 then
+        Deg:=StrToFloat(ValueArray[0]);
+    Negative:=Deg<0;
+    if Negative then
+       Deg:=-Deg
+     else
+      begin
+       LastNo:=pos(ValueArray[high(ValueArray)],AText);
+       if lastno>0 then
+         begin
+          LText:=Lowercase(AText);
+          Negative:=(Pos('s',LText)>lastno)Or(Pos('w',LText)>lastno);
+         end;
+      end;
+    Result:=Deg;
+    if Length(ValueArray)>1 then
+       begin
+        Min:=StrToFloat(ValueArray[1]);
+        Result:=Deg+Min/60;
+       end;
+    if Length(ValueArray)>2 then
+       Begin
+        Sec:=StrToFloat(ValueArray[2]);
+        Result:=Result+Sec/60/60;
+       End;
+    if Negative then
+      Result:=-Result;
+  end;
+End;
+
+
 
 function TextDegreeMinuteSecondFrmDec(Value: Double;
   AAccuracy: Integer): String;

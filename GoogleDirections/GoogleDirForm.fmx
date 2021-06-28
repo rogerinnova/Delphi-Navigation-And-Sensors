@@ -34,7 +34,7 @@ object Directions: TDirections
   object EdtLong: TEdit
     Touch.InteractiveGestures = [LongTap, DoubleTap]
     TabOrder = 9
-    Text = '145.66'
+    Text = '145  30 30'
     Position.X = 424.000000000000000000
     Position.Y = 88.000000000000000000
     Size.Width = 281.000000000000000000
@@ -54,7 +54,7 @@ object Directions: TDirections
   object EdtLat: TEdit
     Touch.InteractiveGestures = [LongTap, DoubleTap]
     TabOrder = 10
-    Text = '-37.999'
+    Text = '37 30S'
     Position.X = 424.000000000000000000
     Position.Y = 128.000000000000000000
     Size.Width = 281.000000000000000000
@@ -126,7 +126,7 @@ object Directions: TDirections
   object EdtLat2: TEdit
     Touch.InteractiveGestures = [LongTap, DoubleTap]
     TabOrder = 8
-    Text = '-38'
+    Text = '-37.55'
     Position.X = 424.000000000000000000
     Position.Y = 312.000000000000000000
     Size.Width = 281.000000000000000000
@@ -155,6 +155,9 @@ object Directions: TDirections
   object CBxGoNow: TCheckBox
     Position.X = 64.000000000000000000
     Position.Y = 400.000000000000000000
+    Size.Width = 273.000000000000000000
+    Size.Height = 19.000000000000000000
+    Size.PlatformDefault = False
     TabOrder = 28
     Text = 'Check To See Link In Browser'
   end
