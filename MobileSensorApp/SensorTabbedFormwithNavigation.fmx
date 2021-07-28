@@ -549,8 +549,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             Size.Height = 437.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
-            Viewport.Width = 333.000000000000000000
-            Viewport.Height = 437.000000000000000000
+            Viewport.Width = 325.000000000000000000
+            Viewport.Height = 429.000000000000000000
           end
         end
       end
@@ -1143,8 +1143,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             Size.Height = 437.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
-            Viewport.Width = 333.000000000000000000
-            Viewport.Height = 437.000000000000000000
+            Viewport.Width = 325.000000000000000000
+            Viewport.Height = 429.000000000000000000
           end
         end
       end
@@ -1202,8 +1202,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 437.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
-        Viewport.Width = 333.000000000000000000
-        Viewport.Height = 437.000000000000000000
+        Viewport.Width = 325.000000000000000000
+        Viewport.Height = 429.000000000000000000
       end
     end
     object TIMap: TTabItem
@@ -1355,8 +1355,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 236.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 7
-        Viewport.Width = 333.000000000000000000
-        Viewport.Height = 236.000000000000000000
+        Viewport.Width = 325.000000000000000000
+        Viewport.Height = 228.000000000000000000
       end
     end
   end

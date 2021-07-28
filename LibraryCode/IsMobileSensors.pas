@@ -2230,7 +2230,14 @@ begin
     Exit;
 
   if not SensorManager.Active then
+   try
     SensorManager.Activate;
+   Except
+    On E:exception do
+      Begin
+        FLastError:=FLastError+#13#10 + E.Message;
+      End;
+   end;
   FIsSensorManager := TIsSensorManager.CurrentIsSensorManager;
   if FIsSensorManager=GlobalManager then
       FIsSensorManager.AddIsSensor(self);
