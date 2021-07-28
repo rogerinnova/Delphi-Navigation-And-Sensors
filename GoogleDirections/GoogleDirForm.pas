@@ -50,9 +50,14 @@ uses IsNavUtils;
 procedure TDirections.BtnGoGoogleClick(Sender: TObject);
 Var
   LocFrom,LocTo:RNavigateLongLat;
+  Long,Lat:Double;
 begin
-  LocFrom.CreateDec(StrToFloat(EdtLong.Text),StrToFloat(EdtLat.Text));
-  LocTo.CreateDec(StrToFloat(EdtLong2.Text),StrToFloat(EdtLat2.Text));
+  Long:=RealFrmDegreeText(EdtLong.Text);
+  Lat:= RealFrmDegreeText(EdtLat.Text);
+  LocFrom.CreateDec(Long,Lat);
+  Long:=RealFrmDegreeText(EdtLong2.Text);
+  Lat:= RealFrmDegreeText(EdtLat2.Text);
+  LocTo.CreateDec(Long,Lat);
   EdtGoogleLink.Text:=LocFrom.GoogleLinkDirectionsTo(LocTo);
   LBlCrowFlies.Text:='Distance as Crow Flys ='+FormatFloat('0.0km',LocTo.MetresFrom(LocFrom)/1000);
   if CBxGoNow.IsChecked then
@@ -62,8 +67,11 @@ end;
 procedure TDirections.EditChangeData(AEdtLong, AEdtLat: TEdit; ALabel: TLabel);
 Var
   Loc:RNavigateLongLat;
+  Long,Lat:Double;
 begin
-  Loc.CreateDec(StrToFloat(AEdtLong.Text),StrToFloat(AEdtLat.Text));
+  Long:=RealFrmDegreeText(AEdtLong.Text);
+  Lat:= RealFrmDegreeText(AEdtLat.Text);
+  Loc.CreateDec(Long,Lat);
   ALabel.Text:=Loc.LocatationText(3);
 end;
 

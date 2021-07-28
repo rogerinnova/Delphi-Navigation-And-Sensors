@@ -465,7 +465,7 @@ end;
 
 procedure TTabbedwithNavigationForm.LoadMap;
 var
-  Current: RNavigateLongLat;
+  CurrentMapPos: RNavigateLongLat;
 begin
   If FLoctnSensorData = nil then
     exit;
@@ -479,15 +479,24 @@ begin
 
   FLastWebQuery := Now;
   // 145.45 dec degrees
+  if FTrackOnWebPage then
+    CurrentMapPos := FLoctnSensorData.CurrentLocation
+  else //show position off maps
+  if FOriginMapOfPos.NotNull then
+    CurrentMapPos:= FOriginMapOfPos
+  else
+  if FOriginMapMesr.NotNull then
+     CurrentMapPos:= FOriginMapMesr
+  else
   case FTestNo of
     1 .. 5:
-      Current := FListOfProgress[FListOfProgress.Count - 1];
+      CurrentMapPos := FListOfProgress[FListOfProgress.Count - 1];
   else
-    Current := FLoctnSensorData.CurrentLocation;
+    CurrentMapPos := FLoctnSensorData.CurrentLocation;
   end;
-  Current.GoogleScale := 17;
+  CurrentMapPos.GoogleScale := 17;
 {$IFDEF msWindows}
-  Current.GoGoogle;
+  CurrentMapPos.GoGoogle;
 {$ELSE}
   WebBrowser1.Navigate(Current.GoogleLink);
   (*

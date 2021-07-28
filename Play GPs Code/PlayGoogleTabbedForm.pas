@@ -90,8 +90,11 @@ end;
 procedure TTabbedwithNavigationForm.BtnGoGoogleClick(Sender: TObject);
 Var
   Loc:RNavigateLongLat;
+  Long,Lat:Double;
 begin
-  Loc.CreateDec(StrToFloat(EdtLong.Text),StrToFloat(EdtLat.Text));
+ Long:=RealFrmDegreeText(EdtLong.Text);
+ Lat:= RealFrmDegreeText(EdtLat.Text);
+  Loc.CreateDec(Long,Lat);
   Loc.GoogleScale:=StrToInt(EdtScale.Text);
   EdtScale.Text:=IntToStr(Loc.GoogleScale);
   LblLocation.Text:=Loc.LocatationText(3);
@@ -101,11 +104,14 @@ end;
 procedure TTabbedwithNavigationForm.BtnGoogleDirClick(Sender: TObject);
 Var
    Loc:RNavigateLongLat;
+  Long,Lat:Double;
 begin
   EdtBoxExit(nil);
+  Long:=RealFrmDegreeText(EdtLong.Text);
+  Lat:= RealFrmDegreeText(EdtLat.Text);
   if FLocationTwo.NotNull then
    Begin
-   Loc.CreateDec(StrToFloat(EdtLong.Text),StrToFloat(EdtLat.Text));
+   Loc.CreateDec(Long,Lat);
    if (Loc.Longitude<>FLocationTwo.Longitude)Or(Loc.Latitude<>FLocationTwo.Latitude) then
        Loc.GoGoogleDirectionsTo(FLocationTwo,2);
   end;
@@ -127,9 +133,13 @@ begin
 end;
 
 procedure TTabbedwithNavigationForm.BtnSetLocation2Click(Sender: TObject);
+Var
+  Long,Lat:Double;
 begin
+  Long:=RealFrmDegreeText(EdtLong.Text);
+  Lat:= RealFrmDegreeText(EdtLat.Text);
   EdtBoxExit(Sender);
-  FLocationTwo.CreateDec(StrToFloat(EdtLong.Text),StrToFloat(EdtLat.Text));
+  FLocationTwo.CreateDec(Long,Lat);
   LblDestination.Text:=LblSource.Text;
   DoLocationTwo;
 end;
@@ -155,14 +165,17 @@ procedure TTabbedwithNavigationForm.DoLocationTwo;
 Var
   Loc:RNavigateLongLat;
   Meters,Bearing,BBearing:Double;
+  Long,Lat:Double;
 begin
+ Long:=RealFrmDegreeText(EdtLong.Text);
+ Lat:= RealFrmDegreeText(EdtLat.Text);
  LblLocationTwo.Text:='';
  LblDistance.Text:='';
  LblOneToTwoBearing.Text:='';
  if FLocationTwo.NotNull then
   begin
    LblLocationTwo.Text:=FLocationTwo.LocatationText(3);
-   Loc.CreateDec(StrToFloat(EdtLong.Text),StrToFloat(EdtLat.Text));
+   Loc.CreateDec(Long,Lat);
    if (Loc.Longitude<>FLocationTwo.Longitude)Or(Loc.Latitude<>FLocationTwo.Latitude) then
       Begin
        Meters:=FLocationTwo.MetresFromPrecision(Loc, Bearing,BBearing);
@@ -176,8 +189,11 @@ end;
 procedure TTabbedwithNavigationForm.EdtBoxExit(Sender: TObject);
 Var
   Loc:RNavigateLongLat;
+  Long,Lat:Double;
 begin
-  Loc.CreateDec(StrToFloat(EdtLong.Text),StrToFloat(EdtLat.Text));
+  Long:=RealFrmDegreeText(EdtLong.Text);
+  Lat:= RealFrmDegreeText(EdtLat.Text);
+  Loc.CreateDec(Long,Lat);
   Loc.GoogleScale:=StrToInt(EdtScale.Text);
   EdtScale.Text:=IntToStr(Loc.GoogleScale);
   LblLocation.Text:=Loc.LocatationText(3);
