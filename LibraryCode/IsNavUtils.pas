@@ -174,7 +174,6 @@ End;
 {Derived rom ISArrayLib}
 type
 TArrayOfUnicodeStrings = Array of String;
-TArrayOfAnsiStrings =Array of Ansistring;
 
 function GetNumericArrayFromAlphaNumericString(AData: String;
   ASepControls: Boolean; ASigns: Boolean; ADollars: Boolean)

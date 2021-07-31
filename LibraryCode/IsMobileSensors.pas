@@ -29,7 +29,7 @@
 }
 
 interface
-
+{$I InnovaMultiPlatLibDefs.inc}
 Uses IsNavUtils, System.Math, System.Sysutils, System.classes,
   System.Generics.Collections,
   FMX.Types, System.Sensors;
@@ -235,7 +235,10 @@ Type
   protected
     function GetAccuracy: TLocationAccuracy;  override;
     function GetDistance: TLocationDistance;  override;
-    function DoGetInterface(const IID: TGUID; out Obj): HResult; override;
+    function DoGetInterface(const IID: TGUID; out Obj): HResult;
+{$IFDEF  ISD102T_DELPHI}
+    override;
+{$ENDIF}
     function GetPowerConsumption: TPowerConsumption;  override;
     procedure SetAccuracy(const Value: TLocationAccuracy);  override;
     procedure SetDistance(const Value: TLocationDistance); override;
@@ -273,7 +276,10 @@ Type
     function DoStart: Boolean; override;
     procedure DoStop; override;
     function GetState: TSensorState; override;
-    function DoGetInterface(const IID: TGUID; out Obj): HResult; override;
+    function DoGetInterface(const IID: TGUID; out Obj): HResult;
+{$ifdef ISD102T_DELPHI}
+    override;
+{$Endif}
     function GetTimeStamp: TDateTime; override;
     function GetMotionSensorType: TMotionSensorType; override;
     function GetUpdateInterval: Double; override;
@@ -404,7 +410,9 @@ Type
     Destructor Destroy; override;
     Class Function ValidLocation(ALocation: TLocationCoord2D): Boolean;
     Class Function SameLocation(ALocA, ALocB: TLocationCoord2D;
-      Epsilon: Double = 1 / 60 / 60): Boolean;
+      Epsilon: Double = 1 / 60 / 60): Boolean; Overload;
+    Class Function SameLocation(ALocA, ALocB: RNavigateLongLat;
+      Epsilon: Double = 1 / 60 / 60): Boolean;  Overload;
     Procedure NullLocation(Var ALocation: TLocationCoord2D);
     Function IsNullLocation(ALocation: TLocationCoord2D): Boolean;
     Function CurrentLocation: RNavigateLongLat;
@@ -1045,6 +1053,18 @@ begin
 end;
 
 class function TIsLocationSensor.SameLocation(ALocA, ALocB: TLocationCoord2D;
+  Epsilon: Double): Boolean;
+begin
+  Try
+    Result := SameValue(ALocA.Longitude, ALocB.Longitude, Epsilon);
+    if Result then
+      Result := SameValue(ALocA.Latitude, ALocB.Latitude, Epsilon);
+  Except
+    Result := false;
+  End;
+end;
+
+class function TIsLocationSensor.SameLocation(ALocA, ALocB: RNavigateLongLat;
   Epsilon: Double): Boolean;
 begin
   Try

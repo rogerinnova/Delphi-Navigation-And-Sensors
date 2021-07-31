@@ -227,6 +227,9 @@ type
   public
     { Public declarations }
     Procedure LoadMap;
+    Property ListOfAllProgress: TList<RNavigateLongLat> read FListOfAllProgress;
+    Property ListOfSampleTimes: TList<TdateTime> read FListOfSampleTimes;
+    Property TotalDistance: Double read FTotalDistance;
   end;
 
 var
@@ -498,7 +501,7 @@ begin
 {$IFDEF msWindows}
   CurrentMapPos.GoGoogle;
 {$ELSE}
-  WebBrowser1.Navigate(Current.GoogleLink);
+  WebBrowser1.Navigate(CurrentMapPos.GoogleLink);
   (*
     ENUSLat := Current.Latitude.ToString(ffGeneral, 5, 2,
     TFormatSettings.Create('en-US'));
@@ -1293,7 +1296,7 @@ procedure TTabbedwithNavigationForm.SetTestPage;
           Inc(i); // 1234.ext
         End;
       End;
-      ATstList.SaveToFile(FileName);
+//      ATstList.SaveToFile(FileName);
 
       if FileExists(FileName) then
         Result := 'Passed:' + Test + '::' + ExtractFileName(FileName)
