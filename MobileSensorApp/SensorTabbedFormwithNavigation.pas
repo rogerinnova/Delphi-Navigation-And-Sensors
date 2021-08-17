@@ -579,7 +579,7 @@ begin
     Begin
       FListOfAllProgress.Add(Current);
       FListOfSampleTimes.Add(Now);
-      AddToMmoTrkLocations(' ' + Current.LocatationText(1));
+      AddToMmoTrkLocations(' ' + Current.LocatationText(3));
       LastTxtIndex := FAllLocationStringList.Add
         (FormatDateTime('dd/mm/yy hh:nn,ss.zzz,', Now) + 'Seconds' +
         Current.LocatationCsv(8) + ',' + FormatFloat('0.0',
