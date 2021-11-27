@@ -29,10 +29,15 @@
 }
 
 interface
+
 {$I InnovaMultiPlatLibDefs.inc}
+
 Uses IsNavUtils, System.Math, System.Sysutils, System.classes,
   System.Generics.Collections,
-  FMX.Types, System.Sensors;
+{$IFDEF MsWindows}
+  Fmx.Types, // cannot be used in android services
+{$ENDIF}
+  System.Sensors;
 
 Type
 
@@ -43,11 +48,15 @@ Type
   Private
     FTextList: String;
     FSensorList: TStringList;
+    FCheckManager: TSensorManager;
+    Constructor Create;
+    Function SensorSList: TStringList;
     Function GetIsTimedEventSensor(ACat: TSensorCategory)
       : TIsTimedEventSensorClass;
     Function SensorRegistered(ASensor: TIsTimedEventSensor): Integer;
+    Function GetSensorsByCategoryIS(ACategory: TSensorCategory): TSensorArray;
   Public
-    Constructor Create;
+    IsActive: Boolean;
     Destructor Destroy; Override;
     Function AddIsSensor(ASensor: TIsTimedEventSensor): Integer;
     Procedure DropIsSensor(ASensor: TIsTimedEventSensor);
@@ -55,6 +64,7 @@ Type
     Class Function CurrentIsSensorManager: TIsSensorManager;
     Class Function SensorCatText(ACat: TSensorCategory): String;
     property TextList: String read FTextList;
+
     // Function TextListAllSensors:String;
   End;
 
@@ -84,6 +94,22 @@ Type
         (llw, hlw: longword;);
   end;
 {$ENDIF}
+
+  TSecondTimer = class(TThread)
+    // Using a TTimer introduces FMX.Types which invalidates Android Services
+  private
+    FSeconds: Cardinal;
+    FOnTimer: TNotifyEvent;
+    procedure SetOnTimer(const Value: TNotifyEvent);
+    procedure SetTimerSecInterval(const Value: Cardinal);
+  protected
+    Procedure Execute; override;
+  public
+    Constructor Create(ASeconds: Integer);
+    Destructor Destroy; override;
+    property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+    property TimerSecInterval: Cardinal read FSeconds write SetTimerSecInterval;
+  end;
 
   TIsLocationSensor = class;
   TIsMotionSensor = class;
@@ -117,10 +143,11 @@ Type
     FLastAndroidTimes: Array of Int64;
 {$ENDIF}
     FStartTimes, FSensorStampTimes, FCurrentSampleTime: Array of TDateTime;
-    FUpdateInterval: Double; // USeconds???
-    FTimerInterval: cardinal; // msec;
-    FEventTimer: TTimer;
-    procedure SetUpdateInterval(const Value: Double);
+    FUpdateInterval: Double; // uSeconds for say orientation sensor
+    FTimerInterval: Cardinal; // Seconds For This Timer Polling;
+    FEventTimer: TSecondTimer;
+    FInSensorTimer: Boolean;
+    procedure SetUpdateInterval(const Value: Cardinal); // Seconds
     Procedure TimerEvent(Sender: TObject);
     Procedure SensorDataChange(Sender: TObject);
     function GetStarted: Boolean;
@@ -159,8 +186,8 @@ Type
     // Stop interogating a sensor after creation
     Procedure DropSensorByIndex(Index: Integer);
     Procedure DropSensorByTextType(ADrop: String);
-    property UpdateInterval: Double read FUpdateInterval
-      write SetUpdateInterval; // uSec
+    property UpdateInterval: Cardinal read FTimerInterval
+      write SetUpdateInterval; // Seconds
     Property Started: Boolean read GetStarted write SetStarted;
     Property NoOfTimeSamples: Integer Read FNoOfTimeSamples;
   End;
@@ -233,17 +260,17 @@ Type
     FLastValue: TLocationCoord2D;
     Procedure LocationTimerEvent(Sender: TObject);
   protected
-    function GetAccuracy: TLocationAccuracy;  override;
-    function GetDistance: TLocationDistance;  override;
+    function GetAccuracy: TLocationAccuracy; override;
+    function GetDistance: TLocationDistance; override;
     function DoGetInterface(const IID: TGUID; out Obj): HResult;
 {$IFDEF  ISD102T_DELPHI}
     override;
 {$ENDIF}
-    function GetPowerConsumption: TPowerConsumption;  override;
-    procedure SetAccuracy(const Value: TLocationAccuracy);  override;
+    function GetPowerConsumption: TPowerConsumption; override;
+    procedure SetAccuracy(const Value: TLocationAccuracy); override;
     procedure SetDistance(const Value: TLocationDistance); override;
     procedure DoLocationChangeType; override;
-    procedure DoOptimize;  override;
+    procedure DoOptimize; override;
     function DoStart: Boolean; override;
     procedure DoStop; override;
     function GetState: TSensorState; override;
@@ -277,9 +304,9 @@ Type
     procedure DoStop; override;
     function GetState: TSensorState; override;
     function DoGetInterface(const IID: TGUID; out Obj): HResult;
-{$ifdef ISD102T_DELPHI}
+{$IFDEF ISD102T_DELPHI}
     override;
-{$Endif}
+{$ENDIF}
     function GetTimeStamp: TDateTime; override;
     function GetMotionSensorType: TMotionSensorType; override;
     function GetUpdateInterval: Double; override;
@@ -357,15 +384,15 @@ Type
     FAvailableProperties: Array of TCustomLocationSensor.TProperties;
     FNavSensors: Array of Boolean;
     FNoOfLocValSamples, FNoOfGenSamples { AllowsReset } ,
-      FNoOfConsistentAltSamples,//Altitude
-      FNoOfConsistentLocSamples,FAverageResetLimit: Integer;
+      FNoOfConsistentAltSamples, // Altitude
+    FNoOfConsistentLocSamples, FAverageResetLimit: Integer;
     // FPrevLocationValue,
     FLastLocValue, FStartLocValue, FRunningLocationSumOfSquares,
       FRunningLocationValue: TLocationCoord2D;
     FRunningAltitudeValue, FRunningAltitudeSumOfSquares, FRunningHeadingValue,
       FRunningHeadingSumOfSquares, FRunningSpeedValue,
       FRunningSpeedSumOfSquares, FLastAlt, FLastHeading, FLastSpeed: Double;
-    FAllowNaN: Boolean;
+    FInGpsResetTimer, FAllowNaN: Boolean;
     // FCurrentErrors: String;
     FCalNavSensor: Integer; // sensor used to Calculate Navigation
     FLatitude, FLongitude, FErrorRadius, FAltitude, FSpeed, FTrueHeading,
@@ -373,16 +400,17 @@ Type
     FAddress1, FAddress2, FCity, FStateProvince, FPostalCode,
       FCountryRegion: string;
     FDoRunningAveLoc: Boolean;
-    FOnBeforeAverageReset: TISLocationChangedEvent;
+    FOnGPSStartStop, FOnBeforeAverageReset: TISLocationChangedEvent;
     FMetersToTriggerLocationChange: Integer;
     FMotionSensor: TIsMotionSensor;
     FMotionChange: TISMotionChangedEvent;
-    FGpsResetTimer: TTimer;
+    FGpsResetTimer: TSecondTimer;
     FGpsTimeToReset: Integer; { by 10 seconds }
     Procedure OnGpsResetTimer(Sender: TObject);
     Procedure StartGpsResetTimer;
     Procedure RestartGps;
     // if Calculating averages and Gps give no value for 3000 Seconds
+
     Procedure CalNewCalNewLocationAverageAndSumOfSquares
       (ANewSample: TLocationCoord2D; Var ARunningLocAveage,
       ARunningLocAveageSumOfSqrs: TLocationCoord2D; ANoOfSamples: Integer);
@@ -398,6 +426,7 @@ Type
     procedure SetMetersToTriggerLocationChange(const Value: Integer);
     procedure SetMotionSensor(const Value: TIsMotionSensor);
     procedure SetOnMotionChange(const Value: TISMotionChangedEvent);
+    procedure SetOnGPSStartStop(const Value: TISLocationChangedEvent);
   Protected
     // Procedure DoCalculatedValues; override;
     function ThisCategory: TSensorCategory; override;
@@ -412,7 +441,7 @@ Type
     Class Function SameLocation(ALocA, ALocB: TLocationCoord2D;
       Epsilon: Double = 1 / 60 / 60): Boolean; Overload;
     Class Function SameLocation(ALocA, ALocB: RNavigateLongLat;
-      Epsilon: Double = 1 / 60 / 60): Boolean;  Overload;
+      Epsilon: Double = 1 / 60 / 60): Boolean; Overload;
     Procedure NullLocation(Var ALocation: TLocationCoord2D);
     Function IsNullLocation(ALocation: TLocationCoord2D): Boolean;
     Function CurrentLocation: RNavigateLongLat;
@@ -434,14 +463,17 @@ Type
     Function LastNavQuery: TDateTime;
     procedure ResetLocationAverages;
     Procedure ResetAverages;
-    Procedure Restart;
+    Procedure RestartCalulationValues;
     Procedure StartNav;
+    Procedure StartGps;
+    Procedure StopGps;
     Property CalNavSensor: Integer read FCalNavSensor write SetCalNavSensor;
     Property AllowNaN: Boolean read FAllowNaN write FAllowNaN;
     Property OnLocChange: TISLocationChangedEvent write SetOnChange;
     Property OnMotionChange: TISMotionChangedEvent Write SetOnMotionChange;
     Property OnBeforeAverageReset: TISLocationChangedEvent
       write SetOnAverageReset;
+    Property OnGPSStartStop: TISLocationChangedEvent write SetOnGPSStartStop;
     Property NoOfLocSamples: Integer Read FNoOfLocValSamples;
     Property NoOfGenSamples: Integer Read FNoOfGenSamples;
     Property NoOfConsistentAltSamples: Integer Read FNoOfConsistentAltSamples;
@@ -453,9 +485,11 @@ Type
     Property MetersToTriggerLocationChange: Integer
       read FMetersToTriggerLocationChange
       write SetMetersToTriggerLocationChange;
-    Property AverageResetLimit: Integer Read    FAverageResetLimit;
+    Property AverageResetLimit: Integer Read FAverageResetLimit;
     Property LastError: String Read FLastError;
   End;
+
+Function LibCompilerString: String;
 
 Const
   TestStaticLocation: Boolean = True; // False;
@@ -560,6 +594,42 @@ begin
       break;
     end;
 end;
+
+Function LibCompilerString: String;
+Var
+  CompilerString: String;
+Begin
+{$IFDEF VER360}
+  CompilerString := 'Compiler is VER360'#10#13;
+{$ELSE}
+{$IFDEF VER350}
+  CompilerString := 'Compiler is Alexandria'#10#13;
+{$ELSE}
+{$IFDEF VER340}
+  CompilerString := 'Compiler is Sydney'#10#13;
+{$ELSE}
+{$IFDEF VER330}
+  CompilerString := 'Compiler is Rio'#10#13;
+{$ELSE}
+{$IFDEF VER320}
+  CompilerString := 'Compiler is Tokyo'#10#13;
+{$ELSE}
+{$IFDEF VER310}
+  CompilerString := 'Compiler is Berlin'#10#13;
+{$ELSE}
+{$IFDEF VER300}
+  CompilerString := 'Compiler is Seatle'#10#13;
+{$ELSE}
+  CompilerString := 'Compiler is Not Known'#10#13;
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+{$ENDIF}
+  Result := CompilerString;
+End;
 
 { TIsLocationSensor }
 
@@ -679,7 +749,7 @@ begin
     FAvailableProperties[i] := TCustomLocationSensor(FSensors[i])
       .AvailableProperties;
   end;
-  FAverageResetLimit:=10;
+  FAverageResetLimit := 10;
   FMetersToTriggerLocationChange := 5;
   FLastLocValue.Create(0.0, 0.0);
   FStartLocValue.Create(0.0, 0.0);
@@ -734,7 +804,9 @@ end;
 
 destructor TIsLocationSensor.Destroy;
 begin
-  FGpsResetTimer.Free;
+  If FGpsResetTimer <> nil then
+    FGpsResetTimer.Terminate;
+  FGpsResetTimer := nil;
   inherited;
 end;
 
@@ -926,7 +998,10 @@ end;
 
 procedure TIsLocationSensor.OnGpsResetTimer(Sender: TObject);
 begin
-  FGpsResetTimer.Enabled := false;
+  if FInGpsResetTimer then
+    Exit;
+
+  FInGpsResetTimer := True;
   try
     Dec(FGpsTimeToReset);
     if FGpsTimeToReset < 0 then
@@ -936,7 +1011,7 @@ begin
         RestartGps;
     end;
   finally
-    FGpsResetTimer.Enabled := True;
+    FInGpsResetTimer := false;
   end;
 end;
 
@@ -1124,6 +1199,14 @@ begin
   FOnChange := TNotifyEvent(Value);
 end;
 
+procedure TIsLocationSensor.SetOnGPSStartStop(const Value
+  : TISLocationChangedEvent);
+begin
+  FOnGPSStartStop := Value;
+  if Assigned(FOnGPSStartStop) then
+    FOnGPSStartStop(self);
+end;
+
 procedure TIsLocationSensor.SetOnMotionChange(const Value
   : TISMotionChangedEvent);
 begin
@@ -1161,15 +1244,27 @@ begin
   end;
 end;
 
+procedure TIsLocationSensor.StartGps;
+Var
+  GPSSensor: TCustomLocationSensor;
+begin
+  // FGpsTimeToReset:=CGpsResetCount;
+  if FCalNavSensor < 0 then
+    Exit;
+  GPSSensor := FSensors[FCalNavSensor] as TCustomLocationSensor;
+  Sleep(500);
+  GPSSensor.Start;
+  if Assigned(FOnGPSStartStop) then
+    FOnGPSStartStop(self);
+end;
+
 procedure TIsLocationSensor.StartGpsResetTimer;
 begin
   if FGpsResetTimer = nil then
   Begin
-    FGpsResetTimer := TTimer.Create(nil);
-    FGpsResetTimer.Enabled := false;
+    FGpsResetTimer := TSecondTimer.Create(10);
     FGpsResetTimer.OnTimer := OnGpsResetTimer;
   End;
-  FGpsResetTimer.Enabled := True;
   FGpsTimeToReset := CGpsResetCount; { by 10 seconds }
 end;
 
@@ -1190,8 +1285,23 @@ begin
     for i := 0 to High(FSensors) do
       if FNavSensors[i] then
         StartSensorByIndex(i);
+  if Assigned(FOnGPSStartStop) then
+    FOnGPSStartStop(self);
   if Assigned(EndAverageMotionSensor) then
     EndAverageMotionSensor.StartAllSensors;
+end;
+
+procedure TIsLocationSensor.StopGps;
+Var
+  GPSSensor: TCustomLocationSensor;
+begin
+  if FCalNavSensor < 0 then
+    Exit;
+  GPSSensor := FSensors[FCalNavSensor] as TCustomLocationSensor;
+  Sleep(500);
+  GPSSensor.Stop;
+  if Assigned(FOnGPSStartStop) then
+    FOnGPSStartStop(self);
 end;
 
 procedure TIsLocationSensor.ResetLocationAverages;
@@ -1208,7 +1318,7 @@ begin
   FNoOfConsistentAltSamples := 0;
 end;
 
-procedure TIsLocationSensor.Restart;
+procedure TIsLocationSensor.RestartCalulationValues;
 Var
   // i: integer;
   ThisLocation: RNavigateLongLat;
@@ -1241,6 +1351,8 @@ begin
     GPSSensor.Stop;
     Sleep(500);
     GPSSensor.Start;
+    if Assigned(FOnGPSStartStop) then
+      FOnGPSStartStop(self);
   End;
 end;
 
@@ -1319,7 +1431,7 @@ end;
 function TDummyWindowsMotionSensor.DoGetInterface(const IID: TGUID;
   out Obj): HResult;
 begin
-  Result:=  0;
+  Result := 0;
 end;
 
 function TDummyWindowsMotionSensor.DoStart: Boolean;
@@ -1461,7 +1573,7 @@ end;
 function TDummyWindowsLocationSensor.DoGetInterface(const IID: TGUID;
   out Obj): HResult;
 begin
-  Result:=0;
+  Result := 0;
 end;
 
 procedure TDummyWindowsLocationSensor.DoLocationChangeType;
@@ -1490,7 +1602,7 @@ end;
 
 function TDummyWindowsLocationSensor.GetAccuracy: TLocationAccuracy;
 begin
-   Result:=0.3;
+  Result := 0.3;
 end;
 
 function TDummyWindowsLocationSensor.GetAuthorized: TAuthorizationType;
@@ -1511,7 +1623,7 @@ end;
 
 function TDummyWindowsLocationSensor.GetDistance: TLocationDistance;
 begin
-    Result:=3;
+  Result := 3;
 end;
 
 function TDummyWindowsLocationSensor.GetDoubleProperty
@@ -1527,7 +1639,7 @@ end;
 
 function TDummyWindowsLocationSensor.GetPowerConsumption: TPowerConsumption;
 begin
-  Result:=TPowerConsumption.pcMedium;
+  Result := TPowerConsumption.pcMedium;
 end;
 
 function TDummyWindowsLocationSensor.GetState: TSensorState;
@@ -1678,15 +1790,15 @@ end;
   end;
 *)
 
-procedure TDummyWindowsLocationSensor.SetAccuracy(
-  const Value: TLocationAccuracy);
+procedure TDummyWindowsLocationSensor.SetAccuracy
+  (const Value: TLocationAccuracy);
 begin
   inherited;
 
 end;
 
-procedure TDummyWindowsLocationSensor.SetDistance(
-  const Value: TLocationDistance);
+procedure TDummyWindowsLocationSensor.SetDistance
+  (const Value: TLocationDistance);
 begin
   inherited;
 
@@ -1870,41 +1982,47 @@ end;
 { TIsSensorManager }
 Var
   GlobalManager: TIsSensorManager = nil;
+  GlobalManagerLock: Boolean = false;
 
 procedure TIsSensorManager.ActivateAllSensors(AReActivate: Boolean);
 Var
-  SensorManager: TSensorManager;
   Sensor: TCustomSensor;
   ThisISSensorClass: TIsTimedEventSensorClass;
-  i: Integer;
+  NoOfSensors, i: Integer;
+Var
+  LManager: TSensorManager;
 begin
   if GlobalManager <> self then
     Exit;
 
-  FTextList := '';
-  SensorManager := TSensorManager.Current;
-  if SensorManager = nil then
-    Exit;
+  LManager := TSensorManager.Current;
 
-  if AReActivate and SensorManager.Active then
-  Begin
-    SensorManager.Deactivate;
-    Sleep(2000);
-  End;
+  If FCheckManager <> LManager then
+    if FCheckManager <> nil then
+      FCheckManager := nil;
 
-  if not SensorManager.Active then
-    SensorManager.Activate;
+  FCheckManager := LManager;
+  LManager.Activate;
 
-  FTextList := '';
-  SensorManager := TSensorManager.Current;
-  if SensorManager = nil then
-    Exit;
+   if AReActivate and LManager.Active then
+   Begin
+   LManager.Deactivate;
+   Sleep(2000);
+   IsActive:=LManager.Active;
+   End;
 
-  if not SensorManager.Active then
-    SensorManager.Activate;
-  for i := 0 to SensorManager.count - 1 do
+  NoOfSensors := LManager.count;
+  if NoOfSensors > 0 then
+    FTextList := IntToStr(NoOfSensors) + ' Sensors' + #13#10
+  else
+    FTextList := '';
+
+  if not LManager.Active then
+    LManager.Activate;
+
+  for i := 0 to NoOfSensors - 1 do
   begin
-    Sensor := SensorManager.Sensors[i];
+    Sensor := LManager.Sensors[i];
     if Sensor <> nil then
     begin
       FTextList := FTextList + SensorCatText(Sensor.Category) + '::' +
@@ -1917,31 +2035,42 @@ begin
   end;
   if FTextList = '' then
     FTextList := 'NoSensors';
+  SensorSList;
 
-  if (FSensorList <> nil) then
-    for i := 0 to FSensorList.count - 1 do
-      if FSensorList.Objects[i] is TIsTimedEventSensor then
-        Try
-          TIsTimedEventSensor(FSensorList.Objects[i]).RefreshSensors;
-        Except
-          On e: Exception do
-            FTextList := FTextList + IntToStr(i) + '/Exception::' +
-              e.message + #13#10;
-        End;
+  for i := 0 to FSensorList.count - 1 do
+    if FSensorList.Objects[i] is TIsTimedEventSensor then
+      Try
+        TIsTimedEventSensor(FSensorList.Objects[i]).RefreshSensors;
+      Except
+        On e: Exception do
+          FTextList := FTextList + IntToStr(i) + '/Exception::' +
+            e.message + #13#10;
+      End;
+  //LManager.Deactivate;
+  IsActive := LManager.Active;
+  // LManager.Free;
 end;
 
 function TIsSensorManager.AddIsSensor(ASensor: TIsTimedEventSensor): Integer;
+Var
+  Text: String;
 begin
   Result := SensorRegistered(ASensor);
   if ASensor = nil then
     Exit;
   If Result < 0 then
-    FSensorList.AddObject(ASensor.TextSensorTypes, ASensor);
+  begin
+    Text := ASensor.TextSensorTypes;
+    FSensorList.AddObject(Text, ASensor);
+  end;
   Result := SensorRegistered(ASensor);
 end;
 
 constructor TIsSensorManager.Create;
 begin
+  if not GlobalManagerLock then
+    raise Exception.Create('TIsSensorManager.Create without Lock');
+
   Try
     inherited;
     if GlobalManager <> nil then
@@ -1957,38 +2086,54 @@ end;
 
 class function TIsSensorManager.CurrentIsSensorManager: TIsSensorManager;
 begin
-  if GlobalManager = nil then
-    TIsSensorManager.Create;
-  if GlobalManager = nil then
-    raise Exception.Create('Error CurrentIsSensorManager No GlobalManager');
-  Result := GlobalManager;
+  while GlobalManagerLock do
+    Sleep(1000);
+  Try
+    GlobalManagerLock := True;
+    if GlobalManager = nil then
+      TIsSensorManager.Create;
+    if GlobalManager = nil then
+      raise Exception.Create('Error CurrentIsSensorManager No GlobalManager');
+    Result := GlobalManager;
+  Finally
+    GlobalManagerLock := false;
+  End;
 end;
 
 destructor TIsSensorManager.Destroy;
 begin
-  if Self = GlobalManager then
-    GlobalManager := nil;
-  FSensorList.Free;
-  inherited;
+  while GlobalManagerLock do
+    Sleep(1000);
+  try
+    GlobalManagerLock := True;
+    if self = GlobalManager then
+      GlobalManager := nil;
+    FSensorList.Free;
+    inherited;
+  finally
+    GlobalManagerLock := false;
+  end;
 end;
 
 procedure TIsSensorManager.DropIsSensor(ASensor: TIsTimedEventSensor);
 Var
-  SensorManager: TSensorManager;
+  // SensorManager: TSensorManager;
   i: Integer;
 begin
   if ASensor = nil then
     Exit;
   i := SensorRegistered(ASensor);
+
   If i >= 0 then
-    FSensorList.Delete(i);
-  if FSensorList.count < 1 then
-  Begin
-    SensorManager := TSensorManager.Current;
-    if SensorManager <> nil then
-      if SensorManager.Active then
-        SensorManager.Active := false;
-  End;
+    SensorSList.Delete(i);
+  // if FSensorList.count < 1 then
+  // Begin
+  // SensorManager := TSensorManager.Current;
+  // if SensorManager <> nil then
+  // if SensorManager.Active then
+  // SensorManager.Active := false;
+  // SensorManager := nil;
+  // End;
 
 end;
 
@@ -2018,6 +2163,35 @@ begin
   end;
 end;
 
+// function TIsSensorManager.GetSensorManager: TSensorManager;
+// begin
+// if FSensorManager = nil then
+// FSensorManager:=  TSensorManager.Current
+// else
+// if FSensorManager<>TSensorManager.Current then
+// FSensorManager:=  TSensorManager.Current;
+// Result:= FSensorManager;
+// end;
+
+function TIsSensorManager.GetSensorsByCategoryIS(ACategory: TSensorCategory)
+  : TSensorArray;
+Var
+  LManager: TSensorManager;
+begin
+  LManager := TSensorManager.Current;
+  If FCheckManager <> LManager then
+    if FCheckManager <> nil then
+      FCheckManager := nil;
+
+  FCheckManager := LManager;
+
+  LManager.Activate;
+  Result := LManager.GetSensorsByCategory(ACategory);
+  //LManager.Deactivate;
+  IsActive := LManager.Active;
+  // LManager.Free;
+end;
+
 class function TIsSensorManager.SensorCatText(ACat: TSensorCategory): String;
 begin
   case ACat of
@@ -2044,19 +2218,24 @@ begin
   end
 end;
 
+function TIsSensorManager.SensorSList: TStringList;
+begin
+  if FSensorList = nil then
+    FSensorList := TStringList.Create;
+  Result := FSensorList;
+end;
+
 function TIsSensorManager.SensorRegistered
   (ASensor: TIsTimedEventSensor): Integer;
 Var
-  i,SensorCnt: Integer;
+  i, SensorCnt: Integer;
 begin
   Result := -1;
   if ASensor = nil then
     Exit;
-  if FSensorList = nil then
-    FSensorList := TStringList.Create;
-  SensorCnt:= FSensorList.count;
+  SensorCnt := SensorSList.count;
   i := 0;
-  while (Result < 0) and (i<SensorCnt) do
+  while (Result < 0) and (i < SensorCnt) do
   begin
     if FSensorList.Objects[i] = ASensor then
       Result := i
@@ -2079,9 +2258,11 @@ end;
 constructor TIsTimedEventSensor.Create;
 begin
   inherited;
-  FEventTimer := TTimer.Create(nil);
-  FEventTimer.Enabled := false;
-  FEventTimer.OnTimer := TimerEvent;
+  if ThisCategory in [TSensorCategory.Motion, TSensorCategory.Orientation] then
+  Begin
+    FEventTimer := TSecondTimer.Create(10);
+    FEventTimer.OnTimer := TimerEvent;
+  End;
   RefreshSensors;
 end;
 
@@ -2094,7 +2275,9 @@ destructor TIsTimedEventSensor.Destroy;
 Var
   i: Integer;
 begin
-  FEventTimer.Free;
+  if FEventTimer <> nil then
+    FEventTimer.Terminate;
+  FEventTimer := nil;
   For i := 0 to high(FSensors) do
     FSensors[i].Free;
   if FIsSensorManager <> nil then
@@ -2224,7 +2407,6 @@ begin
             FNoOfTimeSamples);
         end;
       End;
-
 end;
 
 function TIsTimedEventSensor.IndexOfSensor(ASensor: TObject): Integer;
@@ -2240,28 +2422,29 @@ end;
 
 procedure TIsTimedEventSensor.RefreshSensors;
 var
-  SensorManager: TSensorManager;
+  // SensorManager: TSensorManager;
   i: Integer;
   // Assumes order remains unchanged
 
 begin
-  SensorManager := TSensorManager.Current;
-  if SensorManager = nil then
+  FIsSensorManager := TIsSensorManager.CurrentIsSensorManager;
+  if FIsSensorManager = nil then
     Exit;
 
-  if not SensorManager.Active then
-   try
-    SensorManager.Activate;
-   Except
-    On E:exception do
+  if not FIsSensorManager.IsActive then
+    try
+      FIsSensorManager.ActivateAllSensors(false);
+    Except
+      On e: Exception do
       Begin
-        FLastError:=FLastError+#13#10 + E.Message;
+        FLastError := FLastError + #13#10 + e.message;
       End;
-   end;
-  FIsSensorManager := TIsSensorManager.CurrentIsSensorManager;
-  if FIsSensorManager=GlobalManager then
-      FIsSensorManager.AddIsSensor(self);
-  FSensors := SensorManager.GetSensorsByCategory(ThisCategory);
+    end;
+
+  FSensors := FIsSensorManager.GetSensorsByCategoryIS(ThisCategory);
+
+  if FIsSensorManager = GlobalManager then
+    FIsSensorManager.AddIsSensor(self);
 {$IFDEF msWindows}
   if Length(FSensors) < 1 then
     case ThisCategory of
@@ -2348,7 +2531,7 @@ begin
       StopSensorByIndex(i);
 end;
 
-procedure TIsTimedEventSensor.SetUpdateInterval(const Value: Double);
+procedure TIsTimedEventSensor.SetUpdateInterval(const Value: Cardinal);
 var
   i: Integer;
 begin
@@ -2358,23 +2541,20 @@ begin
     Orientation { Mechanical, Electrical, Biometric, Light, Scanner } ] then
   Begin
     if FEventTimer = nil then
-      FEventTimer := TTimer.Create(nil);
-
-    FEventTimer.Enabled := false;
-    if Value <> FUpdateInterval then
-      Try
-        FUpdateInterval := Value;
-        FTimerInterval := Round(FUpdateInterval / 1000); // Seconds
-        FEventTimer.Enabled := false;
-        if FTimerInterval > 1000 then
-          FEventTimer.Interval := FTimerInterval div 10
-        else
-          FEventTimer.Interval := 100; // ms delayed start up
-        for i := 0 to High(FSensors) do
-          SetSensorInterval(FSensors[i]);
-      Finally
-        FEventTimer.Enabled := True;
-      End;
+    Begin
+      FEventTimer := TSecondTimer.Create(Value);
+      FEventTimer.OnTimer := TimerEvent;
+    end;
+    if Value <> FTimerInterval then
+    begin
+      if Value < 10 then
+        FUpdateInterval := 500000 // every half second read value
+      else
+        FUpdateInterval := 1000000; // every second read value
+      FTimerInterval := Value; // Seconds  Take action on Timer
+      for i := 0 to High(FSensors) do
+        SetSensorInterval(FSensors[i]);
+    End;
   End
   Else
     raise Exception.Create('Error Message:UpdateInterval not supported');
@@ -2427,7 +2607,7 @@ Var
   i: Integer;
 begin
   for i := 0 to High(FSensors) do
-    StopSensorByIndex(i);
+    StopSensorByIndex(i); // Thi Cat of sensors
 end;
 
 procedure TIsTimedEventSensor.StopSensorByIndex(Index: Integer);
@@ -2465,22 +2645,26 @@ begin
   Result := '';
   for i := 0 to High(FSensors) do
     Result := Result + DecodeType(FSensors[i]) + #13#10;
+  // if Result='' then
+  // i:= High(FSensors);
 end;
 
 procedure TIsTimedEventSensor.TimerEvent(Sender: TObject);
 var
   i: Integer;
 begin
-  FEventTimer.Enabled := false;
+  if FInSensorTimer then
+    Exit;
+  FInSensorTimer := True;
   try
-    if FTimerInterval <> FEventTimer.Interval then
-      FEventTimer.Interval := FTimerInterval;
+    if FTimerInterval <> FEventTimer.TimerSecInterval then
+      FEventTimer.TimerSecInterval := FTimerInterval;
     for i := 0 to High(FSensors) do
       if FSensors[i] <> nil then // we can remove sensors
-        GetValues(i);
+        GetValues(i); // Getvalues calls onChange Event
     // DoCalculatedValues;
   finally
-    FEventTimer.Enabled := True;
+    FInSensorTimer := false;
   end;
 end;
 
@@ -2688,10 +2872,10 @@ begin
     if isNaN(Az) then
       TwoDOnly := True
     else
-     begin
-      TwoDOnly := False;
+    begin
+      TwoDOnly := false;
       z := Az;
-     end;
+    end;
     if isNaN(Ax) then
       raise Exception.Create('X Value is Nan');
     x := Ax;
@@ -2754,5 +2938,52 @@ begin
 end;
 
 {$ENDIF}
+{ TSecondTimer }
+
+constructor TSecondTimer.Create(ASeconds: Integer);
+begin
+  inherited Create(True);
+  FSeconds := ASeconds;
+  FreeOnTerminate := True;
+end;
+
+destructor TSecondTimer.Destroy;
+// Var
+// Tst:String;
+begin
+  if not Terminated then
+    raise Exception.Create('Terminate TSecondTimer - Do Not Dispose');
+  inherited;
+end;
+
+procedure TSecondTimer.Execute;
+Var
+  tst: string;
+begin
+  while not Terminated do
+  begin
+    Sleep(FSeconds * 1000);
+    if Not Terminated then
+      if Assigned(OnTimer) then
+        try
+          OnTimer(self);
+        Except
+          On e: Exception do
+            tst := e.message;
+        end;
+  end;
+end;
+
+procedure TSecondTimer.SetOnTimer(const Value: TNotifyEvent);
+begin
+  FOnTimer := Value;
+  if not Started then
+    Start;
+end;
+
+procedure TSecondTimer.SetTimerSecInterval(const Value: Cardinal);
+begin
+  FSeconds := Value;
+end;
 
 end.

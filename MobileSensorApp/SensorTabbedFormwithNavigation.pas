@@ -20,7 +20,7 @@ uses
   Fmx.Memo.Types;
 
 type
-  TTabbedwithNavigationForm = class(TForm)
+   TTabbedwithNavigationForm = class(TForm)
     TbCtrlMain: TTabControl;
     TbItemGenNav: TTabItem;
     TbCtrlGenNav: TTabControl;
@@ -193,6 +193,7 @@ type
     FOriginMapMesr: RNavigateLongLat;
     FScaleMapMesr, FCenterOffsetMapMesr: TPointF;
     FLastTrkVal: String;
+    FOnGPSStartStopProc : TISLocationChangedEvent;
     FShowAllProgress, FDoneTestPage, FTestValuesLoading: Boolean;
     FFailedPermissions, FCompileStgr: string;
     FAllLocationStringList: TStringList; // Flags Glitch Suppession
@@ -226,6 +227,8 @@ type
     procedure ResetDistanceTraveled;
   public
     { Public declarations }
+    Function ManagerData:TIsSensorManager;
+    Procedure SetOnGpsStartStopProc(AGPSStartEvent:TISLocationChangedEvent);
     Procedure LoadMap;
     Property ListOfAllProgress: TList<RNavigateLongLat> read FListOfAllProgress;
     Property ListOfSampleTimes: TList<TdateTime> read FListOfSampleTimes;
@@ -353,9 +356,6 @@ begin
           TDialogService.ShowMessage('Permission Fail:' + AFailed);
       End);
     ResetDistanceTraveled;
-
-    SpBtnStartStopHomeInClick(nil);
-
   Except
     On E: Exception do
     Begin
@@ -553,7 +553,9 @@ begin
   FLoctnSensorData := TIsLocationSensor.Create;
   FLoctnSensorData.OnLocChange := LocChanged;
   FLoctnSensorData.OnBeforeAverageReset := EndRunnibgAverage;
+  FLoctnSensorData.OnGPSStartStop := FOnGPSStartStopProc;
   FLoctnSensorData.MetersToTriggerLocationChange := 2 * GPSAccuracy;
+  FLoctnSensorData.DoRunningAveLoc:=true;
   FormShow(nil);
   SetGeneralNav;
 end;
@@ -645,6 +647,13 @@ begin
       AddToMmoTrkLocations('LocChanged Error::' + E.Message);
     End;
   End;
+end;
+
+function TTabbedwithNavigationForm.ManagerData: TIsSensorManager;
+begin
+  if FManagerData = nil then
+    FManagerData := TIsSensorManager.CurrentIsSensorManager;
+  Result:=FManagerData;
 end;
 
 procedure TTabbedwithNavigationForm.MotionChangedEvent
@@ -934,9 +943,7 @@ end;
 procedure TTabbedwithNavigationForm.SetAboutPage;
 begin
   FCompileStgr := LibCompilerString;
-  if FManagerData = nil then
-    FManagerData := TIsSensorManager.CurrentIsSensorManager;
-  MmoAbout.Text := FCompileStgr + FManagerData.TextList;
+  MmoAbout.Text := FCompileStgr + ManagerData.TextList;
 end;
 
 procedure TTabbedwithNavigationForm.SetGeneralNav;
@@ -1114,6 +1121,16 @@ begin
     End;
     FLastCount := FListOfProgress.Count;
   End;
+end;
+
+procedure TTabbedwithNavigationForm.SetOnGpsStartStopProc(
+  AGPSStartEvent: TISLocationChangedEvent);
+begin
+  if Assigned(FOnGPSStartStopProc) then exit;
+
+  FOnGPSStartStopProc:= AGPSStartEvent;
+  if FLoctnSensorData <> nil then
+     FLoctnSensorData.OnGPSStartStop := FOnGPSStartStopProc;
 end;
 
 procedure TTabbedwithNavigationForm.SetPastSamples;
@@ -1394,7 +1411,7 @@ begin
   FLastCount := 0;
   if FLoctnSensorData = nil then
     exit;
-  FLoctnSensorData.Restart;
+  FLoctnSensorData.RestartCalulationValues;
 end;
 
 procedure TTabbedwithNavigationForm.SpBtnRestDetailsClick(Sender: TObject);

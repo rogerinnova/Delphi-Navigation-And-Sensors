@@ -2,21 +2,22 @@ unit IsPermissions;
 // Confirms a permission is supported and interacts with user where required
 // Set Uses permissions in Project Options this section manages requesting user approval for those that require it
 
-//Delphi 10.3 Rio Targets API Level Android 26
-//Delphi 10.4 Sydney Targets API Level Android 29 (Android 10)
-//Data Storage changes and permissions required change between these versions https://developer.android.com/training/data-storage
+// Delphi 10.3 Rio Targets API Level Android 26
+// Delphi 10.4 Sydney Targets API Level Android 29 (Android 10)
+// Data Storage changes and permissions required change between these versions https://developer.android.com/training/data-storage
 
 interface
 
 {$I InnovaMultiPlatLibDefs.inc}
-{$IFDEF ISD103R_DELPHI}
 {$IFDEF ANDROID}
-   {$Define UseAndroidPermissions}
+{$IFDEF ISD103R_DELPHI}
+{$DEFINE UseAndroidPermissions}
 {$ENDIF}
 {$ENDIF}
+
 Uses
   System.Sysutils, System.classes,
-  System.generics.collections, System.DateUtils,
+  System.generics.collections, System.DateUtils, System.Types,
 {$IFDEF UseAndroidPermissions}
   System.Permissions,
   Androidapi.JNI.JavaTypes, Androidapi.JNIBridge,
@@ -24,12 +25,14 @@ Uses
 {$ENDIF}
   FMX.DialogService,
   // System.Math,
-  System.Math.Vectors, FMX.Types;
+  System.Math.Vectors;
 
 Type
   // If you add here you need to add support to PermissionsGranted
   Pmsion = (Gps, Camera, DataAcc, Network, WiFi, BlueTooth);
   PmsmSet = Set of Pmsion;
+  TArrayOfPmsion = Array Of Pmsion;
+
   TPermissionReturnProcRef = reference to Procedure(Const AllGood: Boolean;
     Const AAllGranted, APartialGranted: PmsmSet; Const FailedMsg: String);
 
@@ -43,14 +46,94 @@ Type
 Procedure PermissionsGranted(AReq: PmsmSet; ADlgPasses, ADlgFails: Boolean;
   ReturnProc: TPermissionReturnProcRef { =nil } );
 
-Function LibCompilerString:String;
+{$IFDEF UseAndroidPermissions}
+Procedure ISRequestPermission(APermArray: TArray<string>;
+  ADlgPasses, ADlgFails: Boolean; ReturnProc: TPermissionReturnProcRef;
+  AReqArray:TArrayOfPmsion);
+{$Endif}
 
 implementation
 
 {$IFDEF UseAndroidPermissions}
 
+Procedure ISRequestPermission(APermArray: TArray<string>;
+  ADlgPasses, ADlgFails: Boolean; ReturnProc: TPermissionReturnProcRef;
+  AReqArray: TArrayOfPmsion);
+Var
+  ReqArray: TArrayOfPmsion;
+Begin
+  ReqArray:=AReqArray;
+  { Sydney To Alexandria Change Procedure Definition }
+{$IFDEF ISD11A_DELPHI}
+  PermissionsService.RequestPermissions(APermArray,
+  procedure(const APermissions: TClassicStringDynArray;
+    const AGrantResults: TClassicPermissionStatusDynArray)
+{$ELSE}
+  PermissionsService.RequestPermissions(APermArray,
+    procedure(const APermissions: TArray<string>;
+      const AGrantResults: TArray<TPermissionStatus>)
+{$ENDIF}
+    var
+      ii,i: integer;
+      PermGranted, PerPartial, PerReq: PmsmSet;
+      GrantedTxt, GrantFailedTxt: String;
+      GoodResult: Boolean;
+      DoResultGrant: Boolean;
+    begin
+      GrantedTxt := '';
+      GrantFailedTxt := '';
+      PerPartial := [];
+      PermGranted:=[];
+      DoResultGrant := Length(APermissions) = Length(AReqArray);
+      if DoResultGrant then
+         for i:=0 to High(AReqArray) do
+           PermGranted := PermGranted + [ReqArray[i]];
+      PerReq:=PermGranted;
+      if (Length(AGrantResults) > 0) then
+      Begin
+        for ii := 0 to High(AGrantResults) do
+        begin
+          if (AGrantResults[ii] = TPermissionStatus.Granted) then
+          Begin
+            GrantedTxt := GrantedTxt + StringReplace(APermArray[ii],
+              'android.permission.', #13#10, []);
+            if DoResultGrant then
+              PerPartial := PerPartial + [AReqArray[ii]];
+          End
+          else
+          begin
+            GrantFailedTxt := GrantFailedTxt + StringReplace(APermArray[ii],
+              'android.permission.', #13#10, []);
+            if DoResultGrant then
+              PermGranted := PermGranted - [AReqArray[ii]];
+          end;
+        end;
+        if DoResultGrant then
+            GoodResult := PerReq = PerPartial
+           Else
+            GoodResult := Length(GrantFailedTxt)<2;
+        if Assigned(ReturnProc) then
+          ReturnProc(GoodResult, PermGranted, PerPartial, GrantFailedTxt);
+
+        if (GrantFailedTxt <> '') and ADlgFails then
+          TDialogService.ShowMessage('Permissions not granted:' +
+            GrantFailedTxt);
+
+        if ADlgPasses then
+          TDialogService.ShowMessage('Granted:' + GrantedTxt);
+      End
+      else
+      begin
+        if Assigned(ReturnProc) then
+          ReturnProc(false, [], [], 'Permissions not granted');
+        if ADlgFails then
+          TDialogService.ShowMessage('Permissions not granted');
+      end;
+    end);
+end;
+
 Procedure PermissionsGranted(AReq: PmsmSet; ADlgPasses, ADlgFails: Boolean;
-  ReturnProc: TPermissionReturnProcRef { =nil } );
+ReturnProc: TPermissionReturnProcRef { =nil } );
 // http://docwiki.embarcadero.com/RADStudio/Sydney/en/Android_Permission_Model
 
 // http://docwiki.embarcadero.com/RADStudio/Sydney/en/Uses_Permissions
@@ -218,23 +301,24 @@ Var
   NxtP: Pmsion;
   NoOfPermissions, Nxt: integer;
   PermArray: TArray<string>;
-  ReqArray: Array of Pmsion;
+  ReqArray: TArrayOfPmsion;
   // Permissions: TJavaObjectArray<JString>;
   // GrantResults: TJavaArray<Integer>;
 begin
-//  if True then {test}
-//     Begin
-//        if Assigned(ReturnProc) then
-//            ReturnProc(True, [], [], 'Permissions not granted');
-//     End
-//  Else
+  // if True then {test}
+  // Begin
+  // if Assigned(ReturnProc) then
+  // ReturnProc(True, [], [], 'Permissions not granted');
+  // End
+  // Else
   Begin
     NoOfPermissions := 0;
     for NxtP := Pmsion.Gps to Pmsion.BlueTooth do
       if NxtP in AReq then
         case NxtP of
           Gps:
-            Inc(NoOfPermissions, 3);
+            Inc(NoOfPermissions, 2);
+            // was 3 dropped  ACCESS_LOCATION_EXTRA_COMMANDS
           Camera:
             Inc(NoOfPermissions, 1);
           DataAcc:
@@ -264,12 +348,12 @@ begin
                 (TJManifest_permission.JavaClass.ACCESS_FINE_LOCATION);
               ReqArray[Nxt] := Gps;
               Inc(Nxt);
-              PermArray[Nxt] :=
-                JStringToString
-                (TJManifest_permission.JavaClass.
-                ACCESS_LOCATION_EXTRA_COMMANDS);
-              ReqArray[Nxt] := Gps;
-              Inc(Nxt);
+              // PermArray[Nxt] :=
+              // JStringToString
+              // (TJManifest_permission.JavaClass.
+              // ACCESS_LOCATION_EXTRA_COMMANDS);
+              // ReqArray[Nxt] := Gps;
+              // Inc(Nxt);
             end;
           Camera:
             Begin
@@ -344,58 +428,10 @@ begin
       Nxt := NoOfPermissions;
       // Something wrong
     End;
-
-    PermissionsService.RequestPermissions(PermArray,
-      procedure(const APermissions: TArray<string>;
-        const AGrantResults: TArray<TPermissionStatus>)
-      var
-        ii: integer;
-        PermGranted, PerPartial: PmsmSet;
-        GrantedTxt, GrantFailedTxt: String;
-        GoodResult: Boolean;
-      begin
-        GrantedTxt := '';
-        GrantFailedTxt := '';
-        PerPartial := [];
-        PermGranted := AReq;
-        if (Length(AGrantResults) > 0) then
-        Begin
-          for ii := 0 to High(AGrantResults) do
-          begin
-            if (AGrantResults[ii] = TPermissionStatus.Granted) then
-            Begin
-              GrantedTxt := GrantedTxt + StringReplace(PermArray[ii],
-                'android.permission.', #13#10, []);
-              PerPartial := PerPartial + [ReqArray[ii]];
-            End
-            else
-            begin
-              GrantFailedTxt := GrantFailedTxt + StringReplace(PermArray[ii],
-                'android.permission.',  #13#10, []);
-              PermGranted := PermGranted - [ReqArray[ii]];
-            end;
-          end;
-          GoodResult := AReq = PerPartial;
-          if Assigned(ReturnProc) then
-            ReturnProc(GoodResult, PermGranted, PerPartial, GrantFailedTxt);
-
-          if (GrantFailedTxt <> '') and ADlgFails then
-            TDialogService.ShowMessage('Permissions not granted:' +
-              GrantFailedTxt);
-
-          if ADlgPasses then
-            TDialogService.ShowMessage('Granted:' + GrantedTxt);
-        End
-        else
-        begin
-          if Assigned(ReturnProc) then
-            ReturnProc(false, [], [], 'Permissions not granted');
-          if ADlgFails then
-            TDialogService.ShowMessage('Permissions not granted');
-        end;
-      end);
-  End;   {Test}
+    ISRequestPermission(PermArray, ADlgPasses, ADlgFails, ReturnProc, ReqArray);
+  end;
 end;
+
 {$ELSE}
 
 Procedure PermissionsGranted(AReq: PmsmSet; ADlgPasses, ADlgFails: Boolean;
@@ -411,33 +447,14 @@ Begin
   if ADlgPasses then
     TDialogService.ShowMessage('Granted:' + 'Dummy Permissions');
 end;
+
+Procedure ISRequestPermission(APermArray: TArray<string>;
+ADlgPasses, ADlgFails: Boolean; ReturnProc: TPermissionReturnProcRef);
+Begin
+  PermissionsGranted([Gps], ADlgPasses, ADlgFails, ReturnProc);
+End;
+
 {$ENDIF}
 
-Function LibCompilerString:String;
-Var
-  CompilerString:String;
-Begin
-{$IFDEF VER340}
-  CompilerString := 'Compiler is Sydney'#10#13;
-{$ELSE}
-{$IFDEF VER330}
-  CompilerString := 'Compiler is Rio'#10#13;
-{$ELSE}
-{$IFDEF VER320}
-  CompilerString := 'Compiler is Tokyo'#10#13;
-{$ELSE}
-{$IFDEF VER310}
-  CompilerString := 'Compiler is Berlin'#10#13;
-{$ELSE}
-{$IFDEF VER300}
-  CompilerString := 'Compiler is Seatle'#10#13;
-{$ELSE}
-  CompilerString := 'Compiler is Not Known'#10#13;
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
- Result:= CompilerString;
-End;
+
 end.

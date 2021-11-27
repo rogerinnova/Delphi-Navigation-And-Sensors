@@ -22,7 +22,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
     Size.Height = 534.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     TabPosition = PlatformDefault
     OnChange = TbCtrlChangeUpdate
@@ -41,7 +41,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 66.000000000000000000
       Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
@@ -59,7 +59,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 485.000000000000000000
         Size.PlatformDefault = False
         TabHeight = 49.000000000000000000
-        TabIndex = 3
+        TabIndex = 1
         TabOrder = 0
         TabPosition = None
         OnChange = TbCtrlChangeUpdate
@@ -212,7 +212,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
           CustomIcon = <
             item
             end>
-          IsSelected = False
+          IsSelected = True
           Size.Width = 8.000000000000000000
           Size.Height = 8.000000000000000000
           Size.PlatformDefault = False
@@ -490,7 +490,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
           CustomIcon = <
             item
             end>
-          IsSelected = True
+          IsSelected = False
           Size.Width = 8.000000000000000000
           Size.Height = 8.000000000000000000
           Size.PlatformDefault = False
@@ -550,8 +550,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             Size.Height = 437.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
-            Viewport.Width = 325.000000000000000000
-            Viewport.Height = 429.000000000000000000
+            Viewport.Width = 333.000000000000000000
+            Viewport.Height = 437.000000000000000000
           end
         end
       end
@@ -560,7 +560,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 66.000000000000000000
       Size.Height = 49.000000000000000000
       Size.PlatformDefault = False
@@ -578,7 +578,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 485.000000000000000000
         Size.PlatformDefault = False
         TabHeight = 49.000000000000000000
-        TabIndex = 0
+        TabIndex = 3
         TabOrder = 0
         TabPosition = None
         OnChange = TbCtrlChangeUpdate
@@ -595,7 +595,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
           CustomIcon = <
             item
             end>
-          IsSelected = True
+          IsSelected = False
           Size.Width = 8.000000000000000000
           Size.Height = 8.000000000000000000
           Size.PlatformDefault = False
@@ -1085,7 +1085,7 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
           CustomIcon = <
             item
             end>
-          IsSelected = False
+          IsSelected = True
           Size.Width = 8.000000000000000000
           Size.Height = 8.000000000000000000
           Size.PlatformDefault = False
@@ -1145,8 +1145,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
             Size.Height = 437.000000000000000000
             Size.PlatformDefault = False
             TabOrder = 1
-            Viewport.Width = 325.000000000000000000
-            Viewport.Height = 429.000000000000000000
+            Viewport.Width = 333.000000000000000000
+            Viewport.Height = 437.000000000000000000
           end
         end
       end
@@ -1204,8 +1204,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 437.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
-        Viewport.Width = 325.000000000000000000
-        Viewport.Height = 429.000000000000000000
+        Viewport.Width = 333.000000000000000000
+        Viewport.Height = 437.000000000000000000
       end
     end
     object TIMap: TTabItem
@@ -1357,8 +1357,8 @@ object TabbedwithNavigationForm: TTabbedwithNavigationForm
         Size.Height = 236.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 7
-        Viewport.Width = 325.000000000000000000
-        Viewport.Height = 228.000000000000000000
+        Viewport.Width = 333.000000000000000000
+        Viewport.Height = 236.000000000000000000
       end
     end
   end
