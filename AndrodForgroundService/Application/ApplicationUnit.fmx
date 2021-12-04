@@ -1,0 +1,177 @@
+object LocationTrackingForm: TLocationTrackingForm
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 612
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyUp = FormKeyUp
+  DesignerMasterStyle = 3
+  object ButtonStopLocationTracking: TButton
+    Align = Top
+    Margins.Left = 10.000000000000000000
+    Margins.Top = 10.000000000000000000
+    Margins.Right = 10.000000000000000000
+    Position.X = 10.000000000000000000
+    Position.Y = 112.000000000000000000
+    Size.Width = 620.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'Stop location tracking'
+    Visible = False
+    OnClick = ButtonStopLocationTrackingClick
+  end
+  object ButtonStartLocationTracking: TButton
+    Align = Top
+    Margins.Left = 10.000000000000000000
+    Margins.Top = 10.000000000000000000
+    Margins.Right = 10.000000000000000000
+    Position.X = 10.000000000000000000
+    Position.Y = 58.000000000000000000
+    Size.Width = 620.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'Start location tracking'
+    OnClick = ButtonStartLocationTrackingClick
+  end
+  object ToolBarHeader: TToolBar
+    Size.Width = 640.000000000000000000
+    Size.Height = 48.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object LabelHeader: TLabel
+      Align = Client
+      Size.Width = 640.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'toollabel'
+      TextSettings.HorzAlign = Center
+      Text = 'Foreground Background Tracking'
+    end
+  end
+  object BtnSendIntent: TButton
+    Align = Top
+    Position.Y = 156.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'BtnSendIntent'
+    Visible = False
+    OnClick = BtnSendIntentClick
+  end
+  object Image1: TImage
+    MultiResBitmap = <
+      item
+      end>
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 439.000000000000000000
+    Size.PlatformDefault = False
+    OnMouseDown = ImageMouseDown
+  end
+  object Timer1: TTimer
+    Interval = 10000
+    OnTimer = Timer1Timer
+    Left = 24
+    Top = 480
+  end
+  object LblPicTitle: TLabel
+    Align = Bottom
+    Position.Y = 541.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 23.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.HorzAlign = Center
+    Text = 'LblPicTitle'
+    TabOrder = 7
+  end
+  object ToolBarZoomPic: TToolBar
+    Align = MostBottom
+    Position.Y = 564.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 48.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 6
+    object SpBtnZoomInPict: TSpeedButton
+      Align = Right
+      StyledSettings = [Family, Size, Style]
+      Margins.Right = 5.000000000000000000
+      Position.X = 571.000000000000000000
+      Size.Width = 64.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Zoom In'
+      TextSettings.FontColorForState.Normal = claSeagreen
+      TextSettings.FontColorForState.Hot = claViolet
+      TextSettings.FontColorForState.Pressed = claTomato
+      TextSettings.FontColorForState.Focused = claTeal
+      OnClick = SpBtnZoomClick
+    end
+    object SpBtnZoomOut: TSpeedButton
+      Align = Left
+      StyledSettings = [Family, Size, Style]
+      Margins.Right = 5.000000000000000000
+      Size.Width = 72.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Zoom Out'
+      TextSettings.FontColorForState.Normal = claSeagreen
+      TextSettings.FontColorForState.Hot = claViolet
+      TextSettings.FontColorForState.Pressed = claTomato
+      TextSettings.FontColorForState.Focused = claTeal
+      OnClick = SpBtnZoomClick
+    end
+    object SpBtnPicLoc1: TSpeedButton
+      Align = Left
+      StyledSettings = [Family, Size, Style]
+      Margins.Right = 5.000000000000000000
+      Position.X = 77.000000000000000000
+      Size.Width = 60.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Go Start'
+      TextSettings.FontColorForState.Normal = claSeagreen
+      TextSettings.FontColorForState.Hot = claViolet
+      TextSettings.FontColorForState.Pressed = claTomato
+      TextSettings.FontColorForState.Focused = claTeal
+      OnClick = SpBtnMapLocClick
+    end
+    object SpBtnPicLocEnd: TSpeedButton
+      Align = Right
+      StyledSettings = [Family, Size, Style]
+      Margins.Right = 5.000000000000000000
+      Position.X = 506.000000000000000000
+      Size.Width = 60.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Go End'
+      TextSettings.FontColorForState.Normal = claSeagreen
+      TextSettings.FontColorForState.Hot = claViolet
+      TextSettings.FontColorForState.Pressed = claTomato
+      TextSettings.FontColorForState.Focused = claTeal
+      OnClick = SpBtnMapLocClick
+    end
+    object SpBtnShowAllProgress: TSpeedButton
+      Align = Center
+      StyledSettings = [Family, Size, Style]
+      Margins.Right = 5.000000000000000000
+      Size.Width = 38.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'All'
+      TextSettings.FontColorForState.Normal = claSeagreen
+      TextSettings.FontColorForState.Hot = claViolet
+      TextSettings.FontColorForState.Pressed = claTomato
+      TextSettings.FontColorForState.Focused = claTeal
+      OnClick = SpBtnMapLocClick
+    end
+  end
+end

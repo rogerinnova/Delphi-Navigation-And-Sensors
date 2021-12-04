@@ -177,6 +177,7 @@ Type
     Class Function ClassTextDetails(ASensor: TCustomSensor;
       Const APreamble: string = ''): String;
     Function AllTextProperties: string;
+    Function PlatformAllSensorText:string;
     Function SampleTimes: string;
     Procedure StartSensorByIndex(Index: Integer);
     Procedure StartSensorByTextType(AStartString: String);
@@ -495,6 +496,7 @@ Const
   TestStaticLocation: Boolean = True; // False;
   GPSAccuracy = 40; // meters
   CGpsResetCount = 30; // By 10 Seconds
+  CNoSendorText='NoSensors';
 
 implementation
 
@@ -1253,6 +1255,10 @@ begin
     Exit;
   GPSSensor := FSensors[FCalNavSensor] as TCustomLocationSensor;
   Sleep(500);
+  GPSSensor.Stop;
+  GPSSensor.Distance := 0.001;
+  GPSSensor.ActivityType := TLocationActivityType.Fitness;
+  GPSSensor.LocationChange := TLocationChangeType.lctSmall;
   GPSSensor.Start;
   if Assigned(FOnGPSStartStop) then
     FOnGPSStartStop(self);
@@ -1981,7 +1987,7 @@ end;
 
 { TIsSensorManager }
 Var
-  GlobalManager: TIsSensorManager = nil;
+  GlobalVarGlobalManager: TIsSensorManager = nil;
   GlobalManagerLock: Boolean = false;
 
 procedure TIsSensorManager.ActivateAllSensors(AReActivate: Boolean);
@@ -1989,66 +1995,82 @@ Var
   Sensor: TCustomSensor;
   ThisISSensorClass: TIsTimedEventSensorClass;
   NoOfSensors, i: Integer;
-Var
   LManager: TSensorManager;
+  LocalGMa: TObject;
+  Error: String;
 begin
-  if GlobalManager <> self then
-    Exit;
+  Try
+    LocalGMa := GlobalVarGlobalManager;
+    Error := '';
 
-  LManager := TSensorManager.Current;
+    if GlobalVarGlobalManager <> self then
+      Exit;
 
-  If FCheckManager <> LManager then
-    if FCheckManager <> nil then
-      FCheckManager := nil;
+    LManager := TSensorManager.Current;
 
-  FCheckManager := LManager;
-  LManager.Activate;
+    If FCheckManager <> LManager then
+      if FCheckManager <> nil then
+        FCheckManager := nil;
 
-   if AReActivate and LManager.Active then
-   Begin
-   LManager.Deactivate;
-   Sleep(2000);
-   IsActive:=LManager.Active;
-   End;
+    FCheckManager := LManager;
+    IsActive := LManager.Active;
 
-  NoOfSensors := LManager.count;
-  if NoOfSensors > 0 then
-    FTextList := IntToStr(NoOfSensors) + ' Sensors' + #13#10
-  else
-    FTextList := '';
+    if AReActivate and LManager.Active then
+    Begin
+      LManager.Deactivate;
+      Sleep(2000);
+      IsActive := LManager.Active;
+    End;
 
-  if not LManager.Active then
-    LManager.Activate;
-
-  for i := 0 to NoOfSensors - 1 do
-  begin
-    Sensor := LManager.Sensors[i];
-    if Sensor <> nil then
+    if not LManager.Active then
     begin
-      FTextList := FTextList + SensorCatText(Sensor.Category) + '::' +
-        Sensor.Description + #13#10;
-      ThisISSensorClass := GetIsTimedEventSensor(Sensor.Category);
-      if ThisISSensorClass <> nil then
-        FTextList := FTextList + ThisISSensorClass.ClassTextDetails(Sensor,
-          '    ') + #13#10;
+      LManager.Activate;
+      Sleep(2000);
     end;
-  end;
-  if FTextList = '' then
-    FTextList := 'NoSensors';
-  SensorSList;
 
-  for i := 0 to FSensorList.count - 1 do
-    if FSensorList.Objects[i] is TIsTimedEventSensor then
-      Try
-        TIsTimedEventSensor(FSensorList.Objects[i]).RefreshSensors;
+    IsActive := LManager.Active;
+    NoOfSensors := LManager.count;
+    if NoOfSensors > 0 then
+      FTextList := IntToStr(NoOfSensors) + ' Sensors' + #13#10
+    else
+      FTextList := '';
+
+    for i := 0 to NoOfSensors - 1 do
+      try
+        Sensor := LManager.Sensors[i];
+        if Sensor <> nil then
+        begin
+          FTextList := FTextList + SensorCatText(Sensor.Category) + '::' +
+            Sensor.Description + #13#10;
+          ThisISSensorClass := GetIsTimedEventSensor(Sensor.Category);
+          if ThisISSensorClass <> nil then
+            FTextList := FTextList + ThisISSensorClass.ClassTextDetails(Sensor,
+              '    ') + #13#10;
+        end;
       Except
         On e: Exception do
-          FTextList := FTextList + IntToStr(i) + '/Exception::' +
-            e.message + #13#10;
-      End;
-  //LManager.Deactivate;
-  IsActive := LManager.Active;
-  // LManager.Free;
+          Error := Error + ' ::  ' + e.message;
+      end;
+    if FTextList = '' then
+      FTextList := CNoSendorText;
+    SensorSList;
+
+    for i := 0 to FSensorList.count - 1 do
+      if FSensorList.Objects[i] is TIsTimedEventSensor then
+        Try
+          TIsTimedEventSensor(FSensorList.Objects[i]).RefreshSensors;
+        Except
+          On e: Exception do
+            FTextList := FTextList + IntToStr(i) + '/Exception::' +
+              e.message + #13#10;
+        End;
+    // LManager.Deactivate;
+    IsActive := LManager.Active;
+    // LManager.Free;
+  Except
+    On e: Exception do
+      Error := Error + ' ::  ' + e.message;
+  end;
 end;
 
 function TIsSensorManager.AddIsSensor(ASensor: TIsTimedEventSensor): Integer;
@@ -2067,34 +2089,45 @@ begin
 end;
 
 constructor TIsSensorManager.Create;
+Var
+  LocalGMa: TObject;
 begin
+  LocalGMa := GlobalVarGlobalManager;
   if not GlobalManagerLock then
     raise Exception.Create('TIsSensorManager.Create without Lock');
 
   Try
     inherited;
-    if GlobalManager <> nil then
-      if GlobalManager <> self then
-        FreeAndNil(GlobalManager);
+    if GlobalVarGlobalManager <> nil then
+      if GlobalVarGlobalManager <> self then
+        FreeAndNil(GlobalVarGlobalManager);
 
-    GlobalManager := self;
+    GlobalVarGlobalManager := self;
     ActivateAllSensors(false);
   Except
-    GlobalManager := nil;
+    On e: Exception do
+    Begin
+      GlobalVarGlobalManager := nil;
+      Raise Exception.Create(e.message);
+    end;
   End;
 end;
 
 class function TIsSensorManager.CurrentIsSensorManager: TIsSensorManager;
+Var
+  LocalGMa: TObject;
 begin
+  LocalGMa := GlobalVarGlobalManager;
   while GlobalManagerLock do
     Sleep(1000);
   Try
     GlobalManagerLock := True;
-    if GlobalManager = nil then
+    if GlobalVarGlobalManager = nil then
       TIsSensorManager.Create;
-    if GlobalManager = nil then
+    if GlobalVarGlobalManager = nil then
       raise Exception.Create('Error CurrentIsSensorManager No GlobalManager');
-    Result := GlobalManager;
+    LocalGMa := GlobalVarGlobalManager;
+    Result := GlobalVarGlobalManager;
   Finally
     GlobalManagerLock := false;
   End;
@@ -2106,8 +2139,8 @@ begin
     Sleep(1000);
   try
     GlobalManagerLock := True;
-    if self = GlobalManager then
-      GlobalManager := nil;
+    if self = GlobalVarGlobalManager then
+      GlobalVarGlobalManager := nil;
     FSensorList.Free;
     inherited;
   finally
@@ -2187,7 +2220,7 @@ begin
 
   LManager.Activate;
   Result := LManager.GetSensorsByCategory(ACategory);
-  //LManager.Deactivate;
+  // LManager.Deactivate;
   IsActive := LManager.Active;
   // LManager.Free;
 end;
@@ -2420,6 +2453,12 @@ begin
 {$ENDIF}
 end;
 
+function TIsTimedEventSensor.PlatformAllSensorText: string;
+begin
+  if FIsSensorManager<>nil then
+    Result:= FIsSensorManager.FTextList;
+end;
+
 procedure TIsTimedEventSensor.RefreshSensors;
 var
   // SensorManager: TSensorManager;
@@ -2443,7 +2482,7 @@ begin
 
   FSensors := FIsSensorManager.GetSensorsByCategoryIS(ThisCategory);
 
-  if FIsSensorManager = GlobalManager then
+  if FIsSensorManager = GlobalVarGlobalManager then
     FIsSensorManager.AddIsSensor(self);
 {$IFDEF msWindows}
   if Length(FSensors) < 1 then
