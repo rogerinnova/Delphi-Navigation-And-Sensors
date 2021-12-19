@@ -210,14 +210,9 @@
             <Form>LocationTrackingForm</Form>
             <FormType>fmx</FormType>
         </DCCReference>
-        <DCCReference Include="..\Service\ServiceUnit.pas">
-            <Form>FBServiceModule</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TAndroidService</DesignClass>
-        </DCCReference>
-        <DCCReference Include="Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsMobileSensors.pas"/>
-        <DCCReference Include="Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsNavUtils.pas"/>
-        <DCCReference Include="Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsPermissions.pas"/>
+        <DCCReference Include="..\..\LibraryCode\IsMobileSensors.pas"/>
+        <DCCReference Include="..\..\LibraryCode\IsNavUtils.pas"/>
+        <DCCReference Include="..\..\LibraryCode\IsPermissions.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbBusObjects.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsUserDataAccess.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbVersionInfo.pas"/>
@@ -239,7 +234,12 @@
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsrcStdLib.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsProcCl.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISStrUtl.pas"/>
-        <DCCReference Include="Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsFmxGraphics.pas"/>
+        <DCCReference Include="..\..\LibraryCode\IsFmxGraphics.pas"/>
+        <DCCReference Include="..\Service\ServiceUnit.pas">
+            <Form>FBServiceModule</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TAndroidService</DesignClass>
+        </DCCReference>
         <JavaReference Include="..\Service\Android\Debug\ForegroundBackgroundService.jar">
             <Disabled/>
         </JavaReference>

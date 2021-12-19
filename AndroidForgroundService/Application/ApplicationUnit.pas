@@ -323,7 +323,8 @@ function TLocationTrackingForm.PermissionsOK: boolean;
 begin
   // Tracking the user's location requires the 'ACCESS_FINE_LOCATION'
   // dangerous permission to be granted at runtime.
-  Result:= TPermissionsService.DefaultService.IsPermissionGranted(LocationPermission);
+  Result:= TPermissionsService.DefaultService.IsPermissionGranted('android.permission.ACCESS_BACKGROUND_LOCATION');
+//  Result:= TPermissionsService.DefaultService.IsPermissionGranted(LocationPermission);
 
   if not Result then
     ISRequestPermission([LocationPermission,

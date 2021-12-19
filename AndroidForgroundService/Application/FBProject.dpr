@@ -4,10 +4,9 @@ uses
   System.StartUpCopy,
   FMX.Forms,
   ApplicationUnit in 'ApplicationUnit.pas' {LocationTrackingForm},
-  ServiceUnit in '..\Service\ServiceUnit.pas' {FBServiceModule: TAndroidService},
-  IsMobileSensors in 'Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsMobileSensors.pas',
-  IsNavUtils in 'Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsNavUtils.pas',
-  IsPermissions in 'Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsPermissions.pas',
+  IsMobileSensors in '..\..\LibraryCode\IsMobileSensors.pas',
+  IsNavUtils in '..\..\LibraryCode\IsNavUtils.pas',
+  IsPermissions in '..\..\LibraryCode\IsPermissions.pas',
   GpsDbBusObjects in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbBusObjects.pas',
   GpsUserDataAccess in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsUserDataAccess.pas',
   GpsDbVersionInfo in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbVersionInfo.pas',
@@ -29,7 +28,8 @@ uses
   IsrcStdLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsrcStdLib.pas',
   IsProcCl in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsProcCl.pas',
   ISStrUtl in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISStrUtl.pas',
-  IsFmxGraphics in 'Z:\Repositories\GitRepository\PublicGit\Roger\Delphi-Navigation-And-Sensors\LibraryCode\IsFmxGraphics.pas';
+  IsFmxGraphics in '..\..\LibraryCode\IsFmxGraphics.pas',
+  ServiceUnit in '..\Service\ServiceUnit.pas' {FBServiceModule: TAndroidService};
 
 {$R *.res}
 
