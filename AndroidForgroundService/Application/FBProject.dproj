@@ -93,7 +93,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>FBProject</SanitizedProjectName>
-        <DCC_Define>FMXApplication;$(DCC_Define)</DCC_Define>
+        <DCC_Define>FMXApplication;AccessOnlineDb;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;IndyIPCommon;RESTComponents;bindcompdbx;DBXInterBaseDriver;IndyIPServer;IndySystem;tethering;fmxFireDAC;FireDAC;FMXTMSFNCCorePkgDXE13;bindcompfmx;FireDACSqliteDriver;FMXTee;soaprtl;DbxCommonDriver;FmxTeeUI;fmx;FireDACIBDriver;xmlrtl;soapmidas;rtl;DbxClientDriver;CustomIPTransport;dbexpress;IndyCore;bindcomp;dsnap;FireDACCommon;IndyIPClient;RESTBackendComponents;soapserver;dbxcds;FMXTMSFNCUIPackPkgDXE13;bindengine;CloudService;dsnapxml;dbrtl;IndyProtocols;FireDACCommonDriver;inet;$(DCC_UsePackage)</DCC_UsePackage>
@@ -211,10 +211,8 @@
             <FormType>fmx</FormType>
         </DCCReference>
         <DCCReference Include="..\..\LibraryCode\IsMobileSensors.pas"/>
-        <DCCReference Include="..\..\LibraryCode\IsNavUtils.pas"/>
         <DCCReference Include="..\..\LibraryCode\IsPermissions.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbBusObjects.pas"/>
-        <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsUserDataAccess.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbVersionInfo.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISPermObjFileStm.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISMultiUserPermObjFileStm.pas"/>
@@ -234,12 +232,14 @@
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsrcStdLib.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsProcCl.pas"/>
         <DCCReference Include="Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISStrUtl.pas"/>
+        <DCCReference Include="..\DataAccess\GpsUserDataAccess.pas"/>
         <DCCReference Include="..\..\LibraryCode\IsFmxGraphics.pas"/>
         <DCCReference Include="..\Service\ServiceUnit.pas">
             <Form>FBServiceModule</Form>
             <FormType>dfm</FormType>
             <DesignClass>TAndroidService</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\..\LibraryCode\IsNavUtils.pas"/>
         <JavaReference Include="..\Service\Android\Debug\ForegroundBackgroundService.jar">
             <Disabled/>
         </JavaReference>

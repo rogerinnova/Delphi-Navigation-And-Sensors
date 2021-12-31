@@ -6,9 +6,7 @@ uses
   System.Android.Service, System.Classes, System.Notification, System.Sensors,
   System.Sensors.Components, System.UITypes,
   Androidapi.JNI.App, Androidapi.JNI.GraphicsContentViewText,
-  // FMX.Platform.Android,
-  Androidapi.JNI.Os, IsMobileSensors, IsNavUtils; // GpsDbBusObjects,
-// GpsUserDataAccess;
+  Androidapi.JNI.Os, IsMobileSensors, IsNavUtils;
 
 type
   TLocationUpdated = procedure(const NewLocation: RNavigateLongLat) of object;
@@ -89,10 +87,12 @@ implementation
 {$R *.dfm}
 
 uses
+{$IfDef AccessOnlineDb}
+  GpsDbBusObjects,
+{$Endif}
   GpsUserDataAccess,
   System.SysUtils, // Androidapi.JNI.Widget,
-  Androidapi.Helpers, Androidapi.JNI.JavaTypes, Androidapi.JNI.Support,
-  GpsDbBusObjects;
+  Androidapi.Helpers, Androidapi.JNI.JavaTypes, Androidapi.JNI.Support;
 
 procedure TFBServiceModule.AndroidServiceCreate(Sender: TObject);
 var
@@ -309,7 +309,7 @@ begin
   Begin
     FISLocationSensor := TIsLocationSensor.Create;
     FISLocationSensor.OnLocChange := LocationSensorLocationChanged;
-    // FISLocationSensor.DoRunningAveLoc:=true;
+    FISLocationSensor.DoRunningAveLoc:=true;
     // FISLocationSensor.OnBeforeAverageReset :=???
 
   End;
@@ -426,38 +426,46 @@ Const
 Var
   Count: Integer;
   CheckClose: Boolean;
-  ThisTime: TDateTime;
+  ThisTime,CalcTime: TDateTime;
   LDbAccess: TGpsDataSource;
 begin
   if Terminated then
     Exit;
   Count := 0;
-  ThisTime := Now;
+  CalcTime:=Now;
   LDbAccess := nil;
   while Not Terminated do
   begin
+    ThisTime := Now;
     Inc(Count);
     Sleep(WtimeMilliSec);
-    ThisTime := ThisTime + WtimeMilliSec / (60 * 60 * 24 * 1000);
-    if FDm <> nil then
-      FDm.SomeText := inttostr(Count) + ' : ' + FormatDateTime('dd hh:nn:ss ',
-        Now) + ' [' + FormatDateTime('dd hh:nn:ss]', ThisTime);
-
     if LDbAccess = nil then
       LDbAccess := SetUpDbAccess as TGpsDataSource;
 
-    if (Count = 5) or ((Count Mod 500) = 0) then
+    if (Count = 5) or ((Count Mod 50) = 0) then
       if (FDm <> nil) then
         FDm.SendTextViaIntent('Service Thread Time is ' +
-          FormatDateTime('hh:nn:ss', ThisTime))
+          FormatDateTime('hh:nn:ss', CalcTime))
       else
         Count := 1;
 
-    if (Count mod 200) = 0 then
+    if (Count mod 20) = 0 then
       if FDm <> nil then
         FDm.NotificationNonLocation;
 
-    LDbAccess.ProgressText := FDm.SomeText;
+
+    CalcTime := CalcTime-ThisTime + Now;
+    ThisTime := Now;
+
+    if FDm <> nil then
+     Begin
+      FDm.SomeText := inttostr(Count) + ' : ' + FormatDateTime('dd hh:nn:ss ',
+        Now) + ' [' + FormatDateTime('dd hh:nn:ss]', CalcTime);
+     if LDbAccess <> nil then
+      LDbAccess.ProgressText := FDm.SomeText;
+     End;
+
+    CalcTime := CalcTime-ThisTime + Now;  //to allow for break points
   end;
   if LDbAccess <> nil then
     LDbAccess.NavCloseQuery(self, CheckClose);
@@ -480,7 +488,9 @@ begin
     FDm.DbAccess := LDbAccess;
     FDm.OnLocationUpdateForDb := LDbAccess.AddChangedLoc;
     FDm.LocationSensor.OnGPSStartStop := LDbAccess.DoGpsStartStopProc;
+{$IfDef AccessOnlineDb}
     TGpsSaveDb.Create(True, False);
+{$Endif}
   Except
     FreeAndNil(Result);
   End;

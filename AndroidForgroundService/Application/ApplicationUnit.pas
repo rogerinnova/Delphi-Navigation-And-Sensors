@@ -235,8 +235,12 @@ begin
         // a bound service and, therefore, allows the native
         // activity to directly interact with it using the binder object
         // passed as parameter in the 'ServiceConnected' procedure.
+        Try
         ServiceConnection.BindService(TFBServiceModule.ServiceClassName);
-
+        Except
+        On E:Exception do
+           LogErrorInForm(E.Message);
+        End;
         Result := True;
       end;
     TApplicationEvent.EnteredBackground:
@@ -389,16 +393,16 @@ begin
   fTotalDistance := LDataAccess.TotalDistance;
   if FDisplayChoice > 3 then
     FDisplayChoice := 0;
-  case FDisplayChoice of
-    0:
-      FCurrentMapList := LDataAccess.ListOfAllProgress;
-    1:
+//  case FDisplayChoice of
+//    0:
+//      FCurrentMapList := LDataAccess.ListOfAllProgress;
+//    1:
       FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
-    2:
-      FCurrentMapList := LDataAccess.ListOfAllProgress;
-    3:
-      FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
-  end;
+//    2:
+//      FCurrentMapList := LDataAccess.ListOfAllProgress;
+//    3:
+//      FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
+//  end;
 
   ImageChanged(nil);
 end;

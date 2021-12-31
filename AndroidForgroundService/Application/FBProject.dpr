@@ -5,10 +5,9 @@ uses
   FMX.Forms,
   ApplicationUnit in 'ApplicationUnit.pas' {LocationTrackingForm},
   IsMobileSensors in '..\..\LibraryCode\IsMobileSensors.pas',
-  IsNavUtils in '..\..\LibraryCode\IsNavUtils.pas',
   IsPermissions in '..\..\LibraryCode\IsPermissions.pas',
+  {$IfDef AccessOnlineDb}
   GpsDbBusObjects in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbBusObjects.pas',
-  GpsUserDataAccess in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsUserDataAccess.pas',
   GpsDbVersionInfo in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbVersionInfo.pas',
   ISPermObjFileStm in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISPermObjFileStm.pas',
   ISMultiUserPermObjFileStm in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISMultiUserPermObjFileStm.pas',
@@ -28,8 +27,11 @@ uses
   IsrcStdLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsrcStdLib.pas',
   IsProcCl in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsProcCl.pas',
   ISStrUtl in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISStrUtl.pas',
+  {$Endif }
+  GpsUserDataAccess in '..\DataAccess\GpsUserDataAccess.pas',
   IsFmxGraphics in '..\..\LibraryCode\IsFmxGraphics.pas',
-  ServiceUnit in '..\Service\ServiceUnit.pas' {FBServiceModule: TAndroidService};
+  ServiceUnit in '..\Service\ServiceUnit.pas' {FBServiceModule: TAndroidService},
+  IsNavUtils in '..\..\LibraryCode\IsNavUtils.pas';
 
 {$R *.res}
 
