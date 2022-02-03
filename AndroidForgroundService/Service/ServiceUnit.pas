@@ -436,26 +436,24 @@ begin
   LDbAccess := nil;
   while Not Terminated do
   begin
-    ThisTime := Now;
     Inc(Count);
     Sleep(WtimeMilliSec);
+    CalcTime := CalcTime+WtimeMilliSec;
+    ThisTime := Now;
     if LDbAccess = nil then
       LDbAccess := SetUpDbAccess as TGpsDataSource;
 
-    if (Count = 5) or ((Count Mod 50) = 0) then
-      if (FDm <> nil) then
-        FDm.SendTextViaIntent('Service Thread Time is ' +
-          FormatDateTime('hh:nn:ss', CalcTime))
-      else
-        Count := 1;
+//    if (Count = 5) or ((Count Mod 50) = 0) then
+//      if (FDm <> nil) then
+//        FDm.SendTextViaIntent('Service Thread Time is ' +
+//          FormatDateTime('hh:nn:ss', CalcTime))
+//      else
+//        Count := 1;
 
     if (Count mod 20) = 0 then
       if FDm <> nil then
         FDm.NotificationNonLocation;
 
-
-    CalcTime := CalcTime-ThisTime + Now;
-    ThisTime := Now;
 
     if FDm <> nil then
      Begin

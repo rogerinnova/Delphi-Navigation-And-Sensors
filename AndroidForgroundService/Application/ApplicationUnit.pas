@@ -91,7 +91,7 @@ uses
 procedure TLocationTrackingForm.FormActivate(Sender: TObject);
 begin
   if not PermissionsOK then
-    raise Exception.Create('Need to set permisions to allow location');
+       LogErrorInForm('Need to set permisions to allow location');
   If FDoneFirstTime then Exit;
 
 
@@ -320,7 +320,7 @@ end;
 
 procedure TLocationTrackingForm.LogErrorInForm(AError: String);
 begin
-  SendTextViaIntent(AError);
+  //SendTextViaIntent(AError);
 end;
 
 function TLocationTrackingForm.PermissionsOK: boolean;

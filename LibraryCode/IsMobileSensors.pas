@@ -1257,7 +1257,9 @@ begin
   Sleep(500);
   GPSSensor.Stop;
   GPSSensor.Distance := 0.001;
+  {$IfDef ISD102T_DELPHI}
   GPSSensor.ActivityType := TLocationActivityType.Fitness;
+  {$Endif}
   GPSSensor.LocationChange := TLocationChangeType.lctSmall;
   GPSSensor.Start;
   if Assigned(FOnGPSStartStop) then

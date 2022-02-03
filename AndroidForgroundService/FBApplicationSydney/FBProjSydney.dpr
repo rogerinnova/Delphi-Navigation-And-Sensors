@@ -1,8 +1,11 @@
-program ForegroundBackgroundService;
+program FBProjSydney;
 
 uses
-  System.Android.ServiceApplication,
-  ServiceUnit in 'ServiceUnit.pas' {FBServiceModule: TAndroidService},
+  System.StartUpCopy,
+  FMX.Forms,
+  ApplicationUnit in '..\Application\ApplicationUnit.pas' {LocationTrackingForm},
+  IsMobileSensors in '..\..\LibraryCode\IsMobileSensors.pas',
+  IsPermissions in '..\..\LibraryCode\IsPermissions.pas',
   {$IfDef AccessOnlineDb}
   GpsDbBusObjects in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbBusObjects.pas',
   GpsDbVersionInfo in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\MultiPlatDev\MobileDeviceSensors\GpsDbSaverFiles\GpsDbVersionInfo.pas',
@@ -16,20 +19,24 @@ uses
   ISIndyUtils in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISIndyUtils.pas',
   IsRemoteDbLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsRemoteDbLib.pas',
   ISBase64AndEncryption in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISBase64AndEncryption.pas',
-//  XE3LibPickup in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\XE3LibPickup.pas',
-  //IsGeneralLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsGeneralLib.pas',
-  //IsArrayLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsArrayLib.pas',
+  XE3LibPickup in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\XE3LibPickup.pas',
+  IsGeneralLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsGeneralLib.pas',
   ISMathsGraphicsLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISMathsGraphicsLib.pas',
-  ISDelphi2009Adjust in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISDelphi2009Adjust.pas',
+  IsArrayLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsArrayLib.pas',
+  IsrcStdLib in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsrcStdLib.pas',
+  IsProcCl in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\IsProcCl.pas',
+  ISStrUtl in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISStrUtl.pas',
   {$Endif }
   GpsUserDataAccess in '..\DataAccess\GpsUserDataAccess.pas',
-  IsMobileSensors in '..\..\LibraryCode\IsMobileSensors.pas',
-  IsNavUtils in '..\..\LibraryCode\IsNavUtils.pas';
+  IsFmxGraphics in '..\..\LibraryCode\IsFmxGraphics.pas',
+  IsNavUtils in '..\..\LibraryCode\IsNavUtils.pas',
+  ISDbSamplerObjects in 'Z:\RogerHome\RepositoryHg\InnovaSolHomeOnSalmon\Delphi Projects\Delphi 3_5 Source Code\LibraryV3\ISDbSamplerObjects.pas',
+  ServiceUnit in '..\Service\ServiceUnit.pas' {FBServiceModule: TAndroidService};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TFBServiceModule, FBServiceModule);
+  Application.CreateForm(TLocationTrackingForm, LocationTrackingForm);
   Application.Run;
 end.
