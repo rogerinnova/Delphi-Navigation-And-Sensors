@@ -1,29 +1,25 @@
 unit ApplicationUnit;
-{$I ..\..\librarycode\InnovaMultiPlatLibDefs.inc}
 
 interface
 
 uses
   System.Android.Service, System.Classes, System.Messaging,
-{$IFDEF ISD102T_DELPHI}
   System.Permissions,
-{$ENDIF}
   System.Sensors,
   System.Generics.Collections, System.Types, System.UITypes,
   FMX.Controls, FMX.Controls.Presentation, FMX.Types, FMX.Forms, FMX.Dialogs,
   Androidapi.JNI.GraphicsContentViewText,
-  FMX.Platform, FMX.StdCtrls,
-  ServiceUnit, IsNavUtils, FMX.Objects;
+  FMX.Platform, FMX.StdCtrls, // IsNavUtils,
+  ServiceUnit, FMX.Objects, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo;
 
 type
   TLocationTrackingForm = class(TForm)
     ToolBarHeader: TToolBar;
     LabelHeader: TLabel;
-    ButtonStopLocationTracking: TButton;
-    ButtonStartLocationTracking: TButton;
+    ButtonStopTimeTracking: TButton;
+    ButtonStartTimeTracking: TButton;
     BtnSendIntent: TButton;
-    Image1: TImage;
-    Timer1: TTimer;
+    TimerUpdateForm: TTimer;
     LblPicTitle: TLabel;
     ToolBarZoomPic: TToolBar;
     SpBtnZoomInPict: TSpeedButton;
@@ -31,50 +27,51 @@ type
     SpBtnPicLoc1: TSpeedButton;
     SpBtnPicLocEnd: TSpeedButton;
     SpBtnShowAllProgress: TSpeedButton;
+    DataMemo: TMemo;
 
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure ButtonStartLocationTrackingClick(Sender: TObject);
-    procedure ButtonStopLocationTrackingClick(Sender: TObject);
+    procedure ButtonStartTimeTrackingClick(Sender: TObject);
     procedure BtnSendIntentClick(Sender: TObject);
-    procedure Timer1Timer(Sender: TObject);
+    procedure TimerUpdateFormTimer(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure SpBtnZoomClick(Sender: TObject);
-    procedure SpBtnMapLocClick(Sender: TObject);
-    procedure ImageMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Single);
+    // procedure ImageMouseDown(Sender: TObject; Button: TMouseButton;
+    // Shift: TShiftState; X, Y: Single);
     procedure FormActivate(Sender: TObject);
+    procedure ButtonStopTimeTrackingClick(Sender: TObject);
   private const
     LocationPermission = 'android.permission.ACCESS_FINE_LOCATION';
   private
+    FNewData: Boolean;
+    FToastText: string;
     ServiceConnection: TLocalServiceConnection;
     Service: TFBServiceModule; // Managed by HandleApplicationEvent
     // Service>Not Null TApplicationEvent.WillBecomeForeground
     // Service >>Nil TApplicationEvent.EnteredBackground:
 
     FDisplayChoice: integer;
-    FScaleMap, FCenterOffsetMap: TPointf;
-    FOriginMap: RNavigateLongLat;
-    FZoomOut: integer;
-    FCurrentMapList: TList<RNavigateLongLat>;
-    fTotalDistance: Double;
-    FDoneFirstTime: boolean;
-    Function PermissionsOK: boolean;
+    // FScaleMap, FCenterOffsetMap: TPointf;
+    // FOriginMap: RNavigateLongLat;
+    // FZoomOut: integer;
+    // FCurrentMapList: TList<RNavigateLongLat>;
+    // fTotalDistance: Double;
+    FDoneFirstTime: Boolean;
+    Function PermissionsOK: Boolean;
     Function ProcessHardwareBack(AKey: Word): Word;
     procedure LogErrorInForm(AError: String);
     procedure SendTextViaIntent(const AText: string);
     procedure ServiceConnected(const LocalService: TAndroidBaseService);
     procedure ServiceDisconnected;
     function HandleApplicationEvent(ApplicationEvent: TApplicationEvent;
-      Context: TObject): boolean;
-    procedure StartLocationTracking;
-    procedure StopLocationTracking;
+      Context: TObject): Boolean;
+    procedure StartTimerTracking;
+    procedure StopTimerTracking;
     procedure DoButtons;
-    procedure ServiceLocationUpdated(const NewLocation: RNavigateLongLat);
+    procedure ServiceThreadDataUpdated(AThread: TThread);
     // Allow the service to launch an intent  ??only while active >>Service in Background
-    Procedure LaunchServiceIntent(AIntent: JIntent);
-    Procedure ImageChanged(Sender: TObject);
+//    Procedure LaunchServiceIntent(AIntent: JIntent);
+    // Procedure ImageChanged(Sender: TObject);
   end;
 
 var
@@ -88,19 +85,19 @@ uses
   System.SysUtils,
   Androidapi.Helpers, Androidapi.JNI.JavaTypes, Androidapi.JNI.Widget,
   IsPermissions,
-  FMX.Platform.Android,
-  FMX.DialogService, GpsUserDataAccess, IsFmxGraphics;
+  FMX.Platform.Android, // IsFmxGraphics, GpsUserDataAccess,
+  FMX.DialogService;
 
 procedure TLocationTrackingForm.FormActivate(Sender: TObject);
 begin
   if not PermissionsOK then
-    LogErrorInForm('Need to set permisions to allow location');
+    raise Exception.Create('Need to set permisions to allow location');
   If FDoneFirstTime then
     Exit;
 
-  StartLocationTracking;
-  FDoneFirstTime := Service <> nil;
+  StartTimerTracking;
 
+  FDoneFirstTime := Service <> nil;
 end;
 
 procedure TLocationTrackingForm.FormCreate(Sender: TObject);
@@ -141,35 +138,39 @@ begin
   SendTextViaIntent('{Some random text} const AText: string;');
 end;
 
-procedure TLocationTrackingForm.ButtonStartLocationTrackingClick
+procedure TLocationTrackingForm.ButtonStartTimeTrackingClick
   (Sender: TObject);
 begin
   if Not PermissionsOK then
     Exit;
 
-  StartLocationTracking;
+  StartTimerTracking;
 end;
 
-procedure TLocationTrackingForm.ButtonStopLocationTrackingClick
-  (Sender: TObject);
+procedure TLocationTrackingForm.ButtonStopTimeTrackingClick(Sender: TObject);
 begin
-  StopLocationTracking;
+   if TimerUpdateForm.Enabled then
+      TimerUpdateForm.Enabled:=False
+    else
+     if (Service<>nil) then
+       if Service.TimerThreadRunning then
+          Service.StopTimerThread;
 end;
 
 procedure TLocationTrackingForm.DoButtons;
 begin
   if Service <> nil then
   Begin
-    if Service.IsUpdatingLocation then
+    if Service.IsUpdatingThreadData then
     Begin
-      ButtonStopLocationTracking.Visible := True;
-      ButtonStartLocationTracking.Visible := false;
+      ButtonStopTimeTracking.Visible := True;
+      ButtonStartTimeTracking.Visible := false;
       BtnSendIntent.Visible := false;
     End
     else
     begin
-      ButtonStopLocationTracking.Visible := false;
-      ButtonStartLocationTracking.Visible := True;
+      ButtonStopTimeTracking.Visible := false;
+      ButtonStartTimeTracking.Visible := True;
       BtnSendIntent.Visible := True;
     end;
 
@@ -199,9 +200,9 @@ begin
   // binder object that allows the direct interaction between
   // the native activity and the service.
   Service := TFBServiceModule(LocalService);
-  Service.LocationUpdated := ServiceLocationUpdated;
-  Service.StartIntent := LaunchServiceIntent;
-  Service.StartLocationTracking;
+  Service.OnThreadDataUpdated := ServiceThreadDataUpdated;
+//  Service.StartIntent := LaunchServiceIntent;
+  Service.StartThreadTrackingService;
   OnCloseQuery := Service.DoCloseQueryFunction;
 end;
 
@@ -213,8 +214,30 @@ begin
   Service := nil;
 end;
 
+procedure TLocationTrackingForm.ServiceThreadDataUpdated(AThread: TThread);
+var
+  TimeThread: TISTestServiceThread;
+begin
+  // if not (AThread is TISTestServiceThread) then
+  // Exit;         Always Exits  as only a pointer is passed
+
+  if AThread<>nil then
+  Try
+    TimeThread := TISTestServiceThread(AThread);
+    FToastText := TimeThread.Currenttext;
+  Except
+    on e:Exception do
+     FToastText :=  E.Message;
+  End;
+  FNewData := True;
+  //Cannot update the Form in this Thread
+  //Toast will not ruun
+  //Want to keep thread delay minimal
+
+end;
+
 function TLocationTrackingForm.HandleApplicationEvent(ApplicationEvent
-  : TApplicationEvent; Context: TObject): boolean;
+  : TApplicationEvent; Context: TObject): Boolean;
 begin
   // It is important to note that a FireMonkey application for Android
   // generally consists of a single activity, which is the
@@ -233,32 +256,14 @@ begin
       Begin
         Result := false; // for debugging
       End;
-    TApplicationEvent.BecameActive:
-      begin
-{$IFDEF ISD102T_DELPHI}
-        Result := false; // for debugging
-{$ELSE}
-        Try
-          ServiceConnection.BindService(TFBServiceModule.ServiceClassName);
-        Except
-          On E: Exception do
-            LogErrorInForm(E.Message);
-        End;
-        Result := True;
-{$ENDIF}
-      end;
     TApplicationEvent.WillBecomeForeground:
       begin
         // Binding the native activity to the service turns the service into
         // a bound service and, therefore, allows the native
         // activity to directly interact with it using the binder object
         // passed as parameter in the 'ServiceConnected' procedure.
-        Try
-          ServiceConnection.BindService(TFBServiceModule.ServiceClassName);
-        Except
-          On E: Exception do
-            LogErrorInForm(E.Message);
-        End;
+        ServiceConnection.BindService(TFBServiceModule.ServiceClassName);
+
         Result := True;
       end;
     TApplicationEvent.EnteredBackground:
@@ -284,78 +289,74 @@ begin
   end
 end;
 
-procedure TLocationTrackingForm.ImageChanged(Sender: TObject);
+{ procedure TLocationTrackingForm.ImageChanged(Sender: TObject);
 
-begin
+  begin
   if FCurrentMapList = nil then
-    Exit;
+  Exit;
 
   TIsGraphics.SetNewImageBitMap(Image1, $FFFFFF);
   if FOriginMap.NotNull then
-    LblPicTitle.Text := FOriginMap.LocatationText(2);
+  LblPicTitle.Text := FOriginMap.LocatationText(2);
 
   FScaleMap := TNavGraphics.GetScale(Image1.Bitmap.Canvas, FCurrentMapList,
-    FOriginMap, FCenterOffsetMap);
+  FOriginMap, FCenterOffsetMap);
   if FScaleMap.X > 0 then
   Begin
-    if FZoomOut > 1 then
-      FScaleMap := FScaleMap / FZoomOut
-    Else if FZoomOut < 0 then
-      FScaleMap := -FScaleMap * FZoomOut;
-    TNavGraphics.DrawLocationsOnCanvas(Image1.Bitmap.Canvas, FCurrentMapList,
-      FOriginMap, FScaleMap, FCenterOffsetMap, 1,
-      'Total ' + TextMeters(fTotalDistance, 2, 0, 2), 0.0)
+  if FZoomOut > 1 then
+  FScaleMap := FScaleMap / FZoomOut
+  Else if FZoomOut < 0 then
+  FScaleMap := -FScaleMap * FZoomOut;
+  TNavGraphics.DrawLocationsOnCanvas(Image1.Bitmap.Canvas, FCurrentMapList,
+  FOriginMap, FScaleMap, FCenterOffsetMap, 1,
+  'Total ' + TextMeters(fTotalDistance, 2, 0, 2), 0.0)
   End;
-end;
+  end;
 
-procedure TLocationTrackingForm.ImageMouseDown(Sender: TObject;
+  procedure TLocationTrackingForm.ImageMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Single);
-Var
+  Var
   Loc: TPointf;
-begin
+  begin
   if Sender = Image1 then
-    if Image1.Bitmap <> nil then
-      if Image1.Bitmap.Canvas <> nil then
-      Begin
-        Loc := TIsGraphics.LocationAsDraw(TPointf.Create(X, Y),
-          Image1.Bitmap.Canvas);
-        TNavGraphics.RelocateNavPointFromMapRef(FOriginMap, FScaleMap, Loc,
-          FCenterOffsetMap);
-        // Dec(FLastCount, 2);
-        // End
-        // Else if Sender = Image2 then
-        // Begin
-        // Loc := TIsGraphics.LocationAsDraw(TPointf.create(X, Y),Image2.Bitmap.Canvas);
-        // TNavGraphics.RelocateNavPointFromMapRef(FOriginMapMesr, FScaleMapMesr, Loc,
-        // FCenterOffsetMapMesr);
-        // Dec(FLastCountMeasure, 2);
-      End;
+  Begin
+  Loc := TIsGraphics.LocationAsDraw(TPointf.Create(X, Y),
+  Image1.Bitmap.Canvas);
+  TNavGraphics.RelocateNavPointFromMapRef(FOriginMap, FScaleMap, Loc,
+  FCenterOffsetMap);
+  // Dec(FLastCount, 2);
+  // End
+  // Else if Sender = Image2 then
+  // Begin
+  // Loc := TIsGraphics.LocationAsDraw(TPointf.create(X, Y),Image2.Bitmap.Canvas);
+  // TNavGraphics.RelocateNavPointFromMapRef(FOriginMapMesr, FScaleMapMesr, Loc,
+  // FCenterOffsetMapMesr);
+  // Dec(FLastCountMeasure, 2);
+  End;
   ImageChanged(Sender);
-end;
-
-procedure TLocationTrackingForm.LaunchServiceIntent(AIntent: JIntent);
-begin
-  MainActivity.startActivity(AIntent);
-end;
+  end;
+}
+//procedure TLocationTrackingForm.LaunchServiceIntent(AIntent: JIntent);
+//begin
+//  MainActivity.startActivity(AIntent);
+//end;
 
 procedure TLocationTrackingForm.LogErrorInForm(AError: String);
 begin
-  // SendTextViaIntent(AError);
+  SendTextViaIntent(AError);
 end;
 
-function TLocationTrackingForm.PermissionsOK: boolean;
+function TLocationTrackingForm.PermissionsOK: Boolean;
 begin
   // Tracking the user's location requires the 'ACCESS_FINE_LOCATION'
   // dangerous permission to be granted at runtime.
-{$IFDEF ISD102T_DELPHI}
   Result := TPermissionsService.DefaultService.IsPermissionGranted
-    ('android.permission.ACCESS_BACKGROUND_LOCATION');
-  // Result:= TPermissionsService.DefaultService.IsPermissionGranted(LocationPermission);
+    (LocationPermission);
 
   if not Result then
     ISRequestPermission([LocationPermission,
       'android.permission.ACCESS_BACKGROUND_LOCATION'], True, True,
-      Procedure(Const AllGood: boolean;
+      Procedure(Const AllGood: Boolean;
         Const AAllGranted, APartialGranted: PmsmSet; Const AFailed: String)
       Begin
         if AFailed <> '' then
@@ -365,12 +366,9 @@ begin
           if AFailed <> '' then
             BtnSendIntent.Text := AFailed
           else
-            StartLocationTracking;
+            StartTimerTracking;
         End;
       End, nil);
-{$ELSE}
-  Result := True;
-{$ENDIF}
 end;
 
 function TLocationTrackingForm.ProcessHardwareBack(AKey: Word): Word;
@@ -378,105 +376,86 @@ begin
   Result := 0;
   TDialogService.MessageDialog(
   // MessageDlg(
-  'Do you wish to Exit GPS', TMsgDlgType.mtConfirmation,
+  'Do you wish to Exit Time Thread Tracking', TMsgDlgType.mtConfirmation,
     [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo], TMsgDlgBtn.mbNo, -1,
     Procedure(Const AResult: TModalResult)
     begin
       if AResult = mrYes then
       Begin
-        // UpdateTimer.Enabled := false; // stop timer
         Close;
       End;
     end)
-  // ProcessHardwareBackDlgRtn)
 end;
 
-procedure TLocationTrackingForm.StartLocationTracking;
+procedure TLocationTrackingForm.StartTimerTracking;
 begin
   if Service <> nil then
-    Service.StartLocationTracking;
+    Service.StartThreadTrackingService;
 end;
 
-procedure TLocationTrackingForm.StopLocationTracking;
+procedure TLocationTrackingForm.StopTimerTracking;
 begin
   if Service <> nil then
-    Service.StopLocationTracking;
+     Service.StopTimerThread;
 end;
 
-procedure TLocationTrackingForm.Timer1Timer(Sender: TObject);
+procedure TLocationTrackingForm.TimerUpdateFormTimer(Sender: TObject);
 Var
-  LDataAccess: TGpsDataSource;
+  LDataAccess: TTimeThreadDataSource;
 begin
   if Service = nil then
     Exit;
   if Service.DbAccess = nil then
     Exit;
-  DoButtons;
-  LDataAccess := TGpsDataSource(Service.DbAccess);
-
-  Inc(FDisplayChoice);
-  fTotalDistance := LDataAccess.TotalDistance;
-  if FDisplayChoice > 3 then
-    FDisplayChoice := 0;
-  // case FDisplayChoice of
-  // 0:
-  // FCurrentMapList := LDataAccess.ListOfAllProgress;
-  // 1:
-  FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
-  // 2:
-  // FCurrentMapList := LDataAccess.ListOfAllProgress;
-  // 3:
-  // FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
-  // end;
-
-  ImageChanged(nil);
-end;
-
-procedure TLocationTrackingForm.ServiceLocationUpdated(const NewLocation
-  : RNavigateLongLat);
-var
-  Text: string;
-  SvData: TGpsDataSource;
-begin
-  Text := NewLocation.LocatationText(1);
-  // When the native activity is visible, location updates are presented
-  // to the user in toast messages of short duration.
-  TJToast.JavaClass.makeText(TAndroidHelper.Context, StrToJCharSequence(Text),
-    TJToast.JavaClass.LENGTH_LONG).show;
-
-  // If the app is bound to the service you can access service data.
-  if Service = nil then
-    LabelHeader.Text := 'No Service'
-  else
-  begin
-    SvData := TGpsDataSource(Service.DbAccess);
-    if SvData <> nil then
-      LabelHeader.Text := FormatFloat('###0.00 ', SvData.SpeedKph) + ' kmph';
-  end;
-end;
-
-procedure TLocationTrackingForm.SpBtnMapLocClick(Sender: TObject);
-begin
-  if FCurrentMapList = nil then
+  if not FNewData then
     Exit;
+  FNewData := false;
+  Try
+    if FToastText <> '' then
+      Try
+        // When the native activity is visible, location updates are presented
+        // to the user in toast messages of short duration.
+        TJToast.JavaClass.makeText(TAndroidHelper.Context,
+          StrToJCharSequence(FToastText), TJToast.JavaClass.LENGTH_LONG).show;
+        FToastText:='';
+      Except
+       on e:Exception do
+        begin
+         FToastText :=  E.Message;
+         FNewData := true;
+        end;
+      End;
 
-  if FCurrentMapList.Count > 0 then
-    if Sender = SpBtnPicLoc1 then
-      FOriginMap := FCurrentMapList[0]
-    Else if Sender = SpBtnPicLocEnd then
-      FOriginMap := FCurrentMapList[FCurrentMapList.Count - 1];
+    DoButtons;
 
-  ImageChanged(Sender);
-end;
+    LDataAccess := TTimeThreadDataSource(Service.DbAccess);
+    LDataAccess.MemoText(DataMemo.Lines);
+    DataMemo.GoToTextEnd;
 
-procedure TLocationTrackingForm.SpBtnZoomClick(Sender: TObject);
-begin
-  if Sender = SpBtnZoomOut then
-    Inc(FZoomOut, 5)
-  Else
-    Dec(FZoomOut, 5);
+    Inc(FDisplayChoice);
+    // fTotalDistance := LDataAccess.TotalDistance;
+    // if FDisplayChoice > 3 then
+    // FDisplayChoice := 0;
+    // case FDisplayChoice of
+    // 0:
+    // FCurrentMapList := LDataAccess.ListOfAllProgress;
+    // 1:
+    // FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
+    // 2:
+    // FCurrentMapList := LDataAccess.ListOfAllProgress;
+    // 3:
+    // FCurrentMapList := LDataAccess.AdjustedListOfGPSPlots;
+    // end;
 
-  ImageChanged(Sender);
+    // ImageChanged(nil);
+
+  Except
+       on e:Exception do
+        begin
+         FToastText :=  E.Message;
+         FNewData := true;
+        end;
+  End;
 end;
 
 end.

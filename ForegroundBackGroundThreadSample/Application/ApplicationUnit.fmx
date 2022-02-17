@@ -12,7 +12,7 @@ object LocationTrackingForm: TLocationTrackingForm
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   DesignerMasterStyle = 3
-  object ButtonStopLocationTracking: TButton
+  object ButtonStopTimeTracking: TButton
     Align = Top
     Margins.Left = 10.000000000000000000
     Margins.Top = 10.000000000000000000
@@ -23,11 +23,11 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.Height = 44.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 2
-    Text = 'Stop location tracking'
+    Text = 'Stop Time Tracking'
     Visible = False
-    OnClick = ButtonStopLocationTrackingClick
+    OnClick = ButtonStopTimeTrackingClick
   end
-  object ButtonStartLocationTracking: TButton
+  object ButtonStartTimeTracking: TButton
     Align = Top
     Margins.Left = 10.000000000000000000
     Margins.Top = 10.000000000000000000
@@ -38,8 +38,8 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.Height = 44.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Text = 'Start location tracking'
-    OnClick = ButtonStartLocationTrackingClick
+    Text = 'Start Time Tracking'
+    OnClick = ButtonStartTimeTrackingClick
   end
   object ToolBarHeader: TToolBar
     Size.Width = 640.000000000000000000
@@ -67,19 +67,8 @@ object LocationTrackingForm: TLocationTrackingForm
     Visible = False
     OnClick = BtnSendIntentClick
   end
-  object Image1: TImage
-    MultiResBitmap = <
-      item
-      end>
-    Align = Client
-    Size.Width = 640.000000000000000000
-    Size.Height = 439.000000000000000000
-    Size.PlatformDefault = False
-    OnMouseDown = ImageMouseDown
-  end
-  object Timer1: TTimer
-    Interval = 10000
-    OnTimer = Timer1Timer
+  object TimerUpdateForm: TTimer
+    OnTimer = TimerUpdateFormTimer
     Left = 24
     Top = 480
   end
@@ -91,6 +80,7 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.PlatformDefault = False
     TextSettings.HorzAlign = Center
     Text = 'LblPicTitle'
+    TabOrder = 7
   end
   object ToolBarZoomPic: TToolBar
     Align = MostBottom
@@ -112,7 +102,6 @@ object LocationTrackingForm: TLocationTrackingForm
       TextSettings.FontColorForState.Hot = claViolet
       TextSettings.FontColorForState.Pressed = claTomato
       TextSettings.FontColorForState.Focused = claTeal
-      OnClick = SpBtnZoomClick
     end
     object SpBtnZoomOut: TSpeedButton
       Align = Left
@@ -126,7 +115,6 @@ object LocationTrackingForm: TLocationTrackingForm
       TextSettings.FontColorForState.Hot = claViolet
       TextSettings.FontColorForState.Pressed = claTomato
       TextSettings.FontColorForState.Focused = claTeal
-      OnClick = SpBtnZoomClick
     end
     object SpBtnPicLoc1: TSpeedButton
       Align = Left
@@ -141,7 +129,6 @@ object LocationTrackingForm: TLocationTrackingForm
       TextSettings.FontColorForState.Hot = claViolet
       TextSettings.FontColorForState.Pressed = claTomato
       TextSettings.FontColorForState.Focused = claTeal
-      OnClick = SpBtnMapLocClick
     end
     object SpBtnPicLocEnd: TSpeedButton
       Align = Right
@@ -156,7 +143,6 @@ object LocationTrackingForm: TLocationTrackingForm
       TextSettings.FontColorForState.Hot = claViolet
       TextSettings.FontColorForState.Pressed = claTomato
       TextSettings.FontColorForState.Focused = claTeal
-      OnClick = SpBtnMapLocClick
     end
     object SpBtnShowAllProgress: TSpeedButton
       Align = Center
@@ -170,7 +156,18 @@ object LocationTrackingForm: TLocationTrackingForm
       TextSettings.FontColorForState.Hot = claViolet
       TextSettings.FontColorForState.Pressed = claTomato
       TextSettings.FontColorForState.Focused = claTeal
-      OnClick = SpBtnMapLocClick
     end
+  end
+  object DataMemo: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    ReadOnly = True
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 439.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 10
+    Viewport.Width = 632.000000000000000000
+    Viewport.Height = 431.000000000000000000
   end
 end

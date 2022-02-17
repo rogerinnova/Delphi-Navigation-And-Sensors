@@ -1,4 +1,5 @@
 unit ServiceUnit;
+{$I ..\..\librarycode\InnovaMultiPlatLibDefs.inc}
 
 interface
 
@@ -44,6 +45,8 @@ type
     Procedure NotificationNonLocation;
     function GetIntent(const ClassName: string): JIntent;
     function GetNotification: JNotification;
+{$IFDEF ISD102T_DELPHI}
+{$ENDIF}
   public const
     ActivityClassName = 'com.embarcadero.firemonkey.FMXNativeActivity';
     ServiceClassName = 'com.embarcadero.services.ForegroundBackgroundService';
@@ -87,29 +90,32 @@ implementation
 {$R *.dfm}
 
 uses
-{$IfDef AccessOnlineDb}
+{$IFDEF AccessOnlineDb}
   GpsDbBusObjects,
-{$Endif}
+{$ENDIF}
   GpsUserDataAccess,
   System.SysUtils, // Androidapi.JNI.Widget,
   Androidapi.Helpers, Androidapi.JNI.JavaTypes, Androidapi.JNI.Support;
 
 procedure TFBServiceModule.AndroidServiceCreate(Sender: TObject);
+
+{$IFDEF ISD102T_DELPHI}
 var
   NotificationChannel: TChannel;
+{$ELSE}
+{$ENDIF}
 begin
   SomeText := 'Location Text';
   FServiceThread := TTestServiceThread.Create(self);
-
+{$IFDEF ISD102T_DELPHI}
   // Creates the notification channel that is used by the ongoing
   // notification that presents location updates to the user.
+
   NotificationChannel := NotificationCenter.CreateChannel;
   NotificationChannel.Id := NotificationChannelId;
   NotificationChannel.Title := 'Foreground location tracking';
   NotificationChannel.Importance := TImportance.Default;
-
   NotificationCenter.CreateOrUpdateChannel(NotificationChannel);
-
   // The Run-Time Library does not allow all customizations needed for the
   // ongoing notification used in this demo application.
   // For the mentioned reason, this demo application uses the native APIs for
@@ -117,6 +123,9 @@ begin
   FNotificationManager := TJNotificationManager.Wrap
     (TAndroidHelper.Context.getSystemService
     (TJContext.JavaClass.NOTIFICATION_SERVICE));
+
+{$ELSE}
+{$ENDIF}
 end;
 
 procedure TFBServiceModule.AndroidServiceDestroy(Sender: TObject);
@@ -274,7 +283,6 @@ begin
     NotificationTitle := 'Long/Lat Service Off';
     NotificationContent := SomeText;
   end;
-
   { Result := TJNotificationCompat_Builder.JavaClass.init(TAndroidHelper.Context,
     StringToJString(NotificationChannelId))
     .addAction(TAndroidHelper.Context.getApplicationInfo.icon,
@@ -287,8 +295,13 @@ begin
     .setTicker(StrToJCharSequence(NotificationContent))
     .setWhen(TJDate.Create.getTime).build;
   }
+{$IFDEF ISD102T_DELPHI}
   ResultBuilder := TJNotificationCompat_Builder.JavaClass.init
     (TAndroidHelper.Context, StringToJString(NotificationChannelId));
+{$ELSE}
+  ResultBuilder := TJNotificationCompat_Builder.JavaClass.init
+    (TAndroidHelper.Context);
+{$ENDIF}
   ResultBuilder.addAction(TAndroidHelper.Context.getApplicationInfo.icon,
     StrToJCharSequence('Stop location tracking'), GetServicePendingIntent);
   ResultBuilder.setPriority(TJNotification.JavaClass.PRIORITY_HIGH);
@@ -309,7 +322,7 @@ begin
   Begin
     FISLocationSensor := TIsLocationSensor.Create;
     FISLocationSensor.OnLocChange := LocationSensorLocationChanged;
-    FISLocationSensor.DoRunningAveLoc:=true;
+    FISLocationSensor.DoRunningAveLoc := True;
     // FISLocationSensor.OnBeforeAverageReset :=???
 
   End;
@@ -426,44 +439,43 @@ Const
 Var
   Count: Integer;
   CheckClose: Boolean;
-  ThisTime,CalcTime: TDateTime;
+  ThisTime, CalcTime: TDateTime;
   LDbAccess: TGpsDataSource;
 begin
   if Terminated then
     Exit;
   Count := 0;
-  CalcTime:=Now;
+  CalcTime := Now;
   LDbAccess := nil;
   while Not Terminated do
   begin
     Inc(Count);
     Sleep(WtimeMilliSec);
-    CalcTime := CalcTime+WtimeMilliSec;
+    CalcTime := CalcTime + WtimeMilliSec;
     ThisTime := Now;
     if LDbAccess = nil then
       LDbAccess := SetUpDbAccess as TGpsDataSource;
 
-//    if (Count = 5) or ((Count Mod 50) = 0) then
-//      if (FDm <> nil) then
-//        FDm.SendTextViaIntent('Service Thread Time is ' +
-//          FormatDateTime('hh:nn:ss', CalcTime))
-//      else
-//        Count := 1;
+    // if (Count = 5) or ((Count Mod 50) = 0) then
+    // if (FDm <> nil) then
+    // FDm.SendTextViaIntent('Service Thread Time is ' +
+    // FormatDateTime('hh:nn:ss', CalcTime))
+    // else
+    // Count := 1;
 
     if (Count mod 20) = 0 then
       if FDm <> nil then
         FDm.NotificationNonLocation;
 
-
     if FDm <> nil then
-     Begin
+    Begin
       FDm.SomeText := inttostr(Count) + ' : ' + FormatDateTime('dd hh:nn:ss ',
         Now) + ' [' + FormatDateTime('dd hh:nn:ss]', CalcTime);
-     if LDbAccess <> nil then
-      LDbAccess.ProgressText := FDm.SomeText;
-     End;
+      if LDbAccess <> nil then
+        LDbAccess.ProgressText := FDm.SomeText;
+    End;
 
-    CalcTime := CalcTime-ThisTime + Now;  //to allow for break points
+    CalcTime := CalcTime - ThisTime + Now; // to allow for break points
   end;
   if LDbAccess <> nil then
     LDbAccess.NavCloseQuery(self, CheckClose);
@@ -486,9 +498,9 @@ begin
     FDm.DbAccess := LDbAccess;
     FDm.OnLocationUpdateForDb := LDbAccess.AddChangedLoc;
     FDm.LocationSensor.OnGPSStartStop := LDbAccess.DoGpsStartStopProc;
-{$IfDef AccessOnlineDb}
+{$IFDEF AccessOnlineDb}
     TGpsSaveDb.Create(True, False);
-{$Endif}
+{$ENDIF}
   Except
     FreeAndNil(Result);
   End;

@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{12BD159D-C53A-46AC-B042-5501C2A7C46A}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="SampleThrdServAppSydney\FBSampleProjectSydney.dproj">
+            <Dependencies>SampleThrdServiceSydney\ForegroundBackgroundSampleService.dproj</Dependencies>
+        </Projects>
+        <Projects Include="SampleThrdServiceSydney\ForegroundBackgroundSampleService.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="FBSampleProjectSydney" DependsOnTargets="ForegroundBackgroundSampleService">
+        <MSBuild Projects="SampleThrdServAppSydney\FBSampleProjectSydney.dproj"/>
+    </Target>
+    <Target Name="FBSampleProjectSydney:Clean" DependsOnTargets="ForegroundBackgroundSampleService:Clean">
+        <MSBuild Projects="SampleThrdServAppSydney\FBSampleProjectSydney.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FBSampleProjectSydney:Make" DependsOnTargets="ForegroundBackgroundSampleService:Make">
+        <MSBuild Projects="SampleThrdServAppSydney\FBSampleProjectSydney.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ForegroundBackgroundSampleService">
+        <MSBuild Projects="SampleThrdServiceSydney\ForegroundBackgroundSampleService.dproj"/>
+    </Target>
+    <Target Name="ForegroundBackgroundSampleService:Clean">
+        <MSBuild Projects="SampleThrdServiceSydney\ForegroundBackgroundSampleService.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ForegroundBackgroundSampleService:Make">
+        <MSBuild Projects="SampleThrdServiceSydney\ForegroundBackgroundSampleService.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="FBSampleProjectSydney;ForegroundBackgroundSampleService"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="FBSampleProjectSydney:Clean;ForegroundBackgroundSampleService:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="FBSampleProjectSydney:Make;ForegroundBackgroundSampleService:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -28,8 +28,8 @@ Type
     FListOfSampleTimes: TList<TDateTime>;
     FListOfAllProgress: TList<RNavigateLongLat>;
     FBestListOfProgress: TList<RNavigateLongLat>;
-    FListOfGPSResets: TList<TLocalGpsStartRec>;
 {$ENDIF}
+    FListOfGPSResets: TList<TLocalGpsStartRec>;
     FOnGpsStartStopProc: TISLocationChangedEvent;
     // FListOfSampleTimes: TList<TdateTime>;
     // FListOfAllProgress: TList<RNavigateLongLat>;
@@ -48,10 +48,7 @@ Type
     function GetSamplingDetails: String;
     function GetListOfAllProgress: TList<RNavigateLongLat>;
     function GetListOfSampleTimes: TList<TDateTime>;
-{$IFDEF UseAppForm}
-{$ELSE}
     function ListOfGPSResetTimes: TList<TLocalGpsStartRec>;
-{$ENDIF}
   public
     Constructor Create;
     Destructor Destroy; override;
@@ -125,6 +122,8 @@ begin
   FSpeedKmh:=ASensor.SpeedKilometersPerHour;
 end;
 
+{$IFNDEF UseAppForm}
+
 function TGpsDataSource.AdjustedListOfGPSPlots: TList<RNavigateLongLat>;
 Var
   LTravel, NewTravel: Double;
@@ -176,6 +175,7 @@ begin
   if Abs(NewTravel - LTravel) > 1 then
     FTotalDistance := (NewTravel + LTravel) / 2;
 end;
+{$ENDIF}
 
 constructor TGpsDataSource.Create;
 begin
