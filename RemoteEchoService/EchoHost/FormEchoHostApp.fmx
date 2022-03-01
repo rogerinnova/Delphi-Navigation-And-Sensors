@@ -1,0 +1,51 @@
+object FormEchoApp: TFormEchoApp
+  Left = 0
+  Top = 0
+  Caption = 'Form5'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object BtnBindRemote: TButton
+    Align = Top
+    Position.Y = 60.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 60.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'BtnBindRemote'
+    OnClick = BtnBindRemoteClick
+  end
+  object BtnSendRemote: TButton
+    Align = Top
+    Size.Width = 640.000000000000000000
+    Size.Height = 60.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    Text = 'BtnSendRemote'
+    OnClick = BtnSendRemoteClick
+  end
+  object BtnTestService: TButton
+    Align = Top
+    Position.Y = 120.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 60.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'BtnTestService'
+    OnClick = BtnTestServiceClick
+  end
+  object Memo1: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    DataDetectorTypes = []
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 300.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 3
+    Viewport.Width = 636.000000000000000000
+    Viewport.Height = 296.000000000000000000
+  end
+end

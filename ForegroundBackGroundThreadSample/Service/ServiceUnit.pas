@@ -28,6 +28,8 @@ type
       const AnIntent: JIntent): Boolean;
     procedure ThreadUpdate(AThread: TThread);
     procedure AndroidServiceDestroy(Sender: TObject);
+    function AndroidServiceHandleMessage(const Sender: TObject;
+      const AMessage: JMessage): Boolean;
   private const
     NotificationId = -1;
     NotificationChannelId = 'channel_id_foreground_thread_tracking';
@@ -126,6 +128,8 @@ Function ThreadDataSource: TTimeThreadDataSource;
 
 Const
   CIgnorFirstXLocations = 3;
+  GET_TIME = 455;
+  SERVICE_TIME = 544;
 
 var
   FBServiceModule: TFBServiceModule;
@@ -153,12 +157,16 @@ Begin
 End;
 
 procedure TFBServiceModule.AndroidServiceCreate(Sender: TObject);
+{$IFDEF ISD102T_DELPHI}
 var
   NotificationChannel: TChannel;
+{$Endif}
 begin
+
   SomeText := 'Location Text';
   FServiceThread := TISTestServiceThread.Create(self);
 
+{$IFDEF ISD102T_DELPHI}
   // Creates the notification channel that is used by the ongoing
   // notification that presents location updates to the user.
   NotificationChannel := NotificationCenter.CreateChannel;
@@ -167,7 +175,6 @@ begin
   NotificationChannel.Importance := TImportance.Default;
 
   NotificationCenter.CreateOrUpdateChannel(NotificationChannel);
-
   // The Run-Time Library does not allow all customizations needed for the
   // ongoing notification used in this demo application.
   // For the mentioned reason, this demo application uses the native APIs for
@@ -175,12 +182,40 @@ begin
   FNotificationManager := TJNotificationManager.Wrap
     (TAndroidHelper.Context.getSystemService
     (TJContext.JavaClass.NOTIFICATION_SERVICE));
+ {$Else}
+  FNotificationManager := TJNotificationManager.Wrap
+    (TAndroidHelper.Context.getSystemService
+    (TJContext.JavaClass.NOTIFICATION_SERVICE));
+{$Endif}
 end;
 
 procedure TFBServiceModule.AndroidServiceDestroy(Sender: TObject);
 begin
   FServiceThread.Free;
   // FreeAndNil(FISLocationSensor);
+end;
+
+function TFBServiceModule.AndroidServiceHandleMessage(const Sender: TObject;
+  const AMessage: JMessage): Boolean;
+var
+  LMessage: JMessage;
+  LBundle: JBundle;
+begin
+  case AMessage.what of
+    GET_TIME:
+    begin
+      LBundle := TJBundle.Create;  // we can not send String because is not parcelable
+      LMessage := TJMessage.Create;
+      LMessage.what := SERVICE_TIME;
+      LBundle.putString(TAndroidHelper.StringToJString('Key'), TAndroidHelper.StringToJString('This is a service text !!!'));
+      LMessage.obj := LBundle;
+      AMessage.replyTo.send(LMessage);
+      Result := True;
+    end;
+  else
+    Result := False;
+  end;
+
 end;
 
 function TFBServiceModule.AndroidServiceStartCommand(const Sender: TObject;
@@ -353,8 +388,13 @@ begin
     .setTicker(StrToJCharSequence(NotificationContent))
     .setWhen(TJDate.Create.getTime).build;
   }
+{$IFDEF ISD102T_DELPHI}
   ResultBuilder := TJNotificationCompat_Builder.JavaClass.init
     (TAndroidHelper.Context, StringToJString(NotificationChannelId));
+{$ELSE}
+  ResultBuilder := TJNotificationCompat_Builder.JavaClass.init
+    (TAndroidHelper.Context);
+{$ENDIF}
 //  ResultBuilder.addAction(TAndroidHelper.Context.getApplicationInfo.icon,
 //    StrToJCharSequence('Stop location tracking'), GetServicePendingIntent);
   ResultBuilder.setPriority(TJNotification.JavaClass.PRIORITY_HIGH);

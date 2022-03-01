@@ -5,6 +5,7 @@ object FBServiceModule: TFBServiceModule
   OnBind = AndroidServiceBind
   OnUnBind = AndroidServiceUnBind
   OnRebind = AndroidServiceRebind
+  OnHandleMessage = AndroidServiceHandleMessage
   OnStartCommand = AndroidServiceStartCommand
   Height = 238
   Width = 324

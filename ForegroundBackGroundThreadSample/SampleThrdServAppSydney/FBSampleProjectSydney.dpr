@@ -11,6 +11,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TLocationTrackingForm, LocationTrackingForm);
-  Application.CreateForm(TFBServiceModule, FBServiceModule);
   Application.Run;
 end.

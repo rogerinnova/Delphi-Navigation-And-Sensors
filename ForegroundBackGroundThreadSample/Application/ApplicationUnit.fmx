@@ -80,7 +80,6 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.PlatformDefault = False
     TextSettings.HorzAlign = Center
     Text = 'LblPicTitle'
-    TabOrder = 7
   end
   object ToolBarZoomPic: TToolBar
     Align = MostBottom
@@ -164,10 +163,31 @@ object LocationTrackingForm: TLocationTrackingForm
     ReadOnly = True
     Align = Client
     Size.Width = 640.000000000000000000
-    Size.Height = 439.000000000000000000
+    Size.Height = 351.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 10
     Viewport.Width = 632.000000000000000000
-    Viewport.Height = 431.000000000000000000
+    Viewport.Height = 343.000000000000000000
+  end
+  object BtnBindExternal: TButton
+    Align = Top
+    Position.Y = 102.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 12
+    Text = 'BtnBindExternal'
+    OnClick = BtnBindExternalClick
+  end
+  object BtnSendText: TButton
+    Align = Top
+    Enabled = False
+    Position.Y = 146.000000000000000000
+    Size.Width = 640.000000000000000000
+    Size.Height = 44.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 13
+    Text = 'BtnSendText'
+    OnClick = BtnSendTextClick
   end
 end
