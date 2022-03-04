@@ -48,11 +48,11 @@ type
 
 var
   SvcDMExho: TSvcDMExho;
+  SVCEchoPackageName:String='com.embarcadero.RemoteEchoHostApp';
 
 const
   SET_ECHO_STRING = 564;
   SVC_ECHO_STRING = 465;
-  SVCEchoPackageName='com.embarcadero.RemoteEchoHostApp';
   SVCEchoSvcName= 'com.embarcadero.services.RemoteEchoService';
 
 

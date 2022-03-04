@@ -44,8 +44,8 @@ type
     // Shift: TShiftState; X, Y: Single);
     procedure FormActivate(Sender: TObject);
     procedure ButtonStopTimeTrackingClick(Sender: TObject);
-    procedure BtnBindExternalClick(Sender: TObject);
-    procedure BtnSendTextClick(Sender: TObject);
+//    procedure BtnBindExternalClick(Sender: TObject);
+//    procedure BtnSendTextClick(Sender: TObject);
   private const
     LocationPermission = 'android.permission.ACCESS_FINE_LOCATION';
   private
@@ -65,14 +65,14 @@ type
     // fTotalDistance: Double;
     FDoneFirstTime: Boolean;
 
-{$IFNDEF ISD102T_DELPHI}  // action via Timer
+(*{$IFNDEF ISD102T_DELPHI}  // action via Timer
 
     FRemoteServiceConnection: TRemoteServiceConnection;
     Procedure MakeServiceConnection;
     procedure OnRemoteServiceConnected(const ServiceMessenger: JMessenger);
     procedure OnHandleRemoteMessage(const AMessage: JMessage);
     // Procedure IdleUpdate(Sender:TObject; Var Done:Boolean);
-{$ENDIF}
+{$ENDIF}   *)
     Function PermissionsOK: Boolean;
     Function ProcessHardwareBack(AKey: Word): Word;
     procedure LogErrorInForm(AError: String);
@@ -103,7 +103,7 @@ uses
   Androidapi.Helpers, Androidapi.JNI.JavaTypes, Androidapi.JNI.Widget,
   IsPermissions,
   FMX.Platform.Android, // IsFmxGraphics, GpsUserDataAccess,
-  FMX.DialogService;
+  FMX.DialogService, SvcEchoDM;
 
 procedure TLocationTrackingForm.FormActivate(Sender: TObject);
 begin
@@ -151,37 +151,12 @@ begin
   End;
 end;
 
-procedure TLocationTrackingForm.BtnBindExternalClick(Sender: TObject);
-begin
-{$IFNDEF ISD102T_DELPHI}  // action via Timer
-  if FRemoteServiceConnection=nil then MakeServiceConnection;
-  Try
-  FRemoteServiceConnection.BindService('com.embarcadero.AppRemoteHost',
-    'com.embarcadero.services.RemoteService');
-  Except
-      On e:Exception do
-        FToastText:=e.Message;
-  End;
-{$Endif}
-end;
 
 procedure TLocationTrackingForm.BtnSendIntentClick(Sender: TObject);
 begin
   SendTextViaIntent('{Some random text} const AText: string;');
 end;
 
-procedure TLocationTrackingForm.BtnSendTextClick(Sender: TObject);
-var
-  LMessage: JMessage;
-const
-  GET_STRING = 123;
-begin
-{$IFNDEF ISD102T_DELPHI}  // action via Timer
-  LMessage := TJMessage.JavaClass.obtain(nil, GET_STRING);
-  LMessage.replyTo := FRemoteServiceConnection.LocalMessenger;
-  FRemoteServiceConnection.ServiceMessenger.send(LMessage);
-{$Endif}
-end;
 
 procedure TLocationTrackingForm.ButtonStartTimeTrackingClick(Sender: TObject);
 begin
@@ -273,17 +248,7 @@ begin
         FToastText := E.Message;
     End;
   FNewData := True;
-  // Cannot update the Form in this Thread
-  // Toast will not ruun
-  // Want to keep thread delay minimal
-
-{$IFDEF ISD102T_DELPHI}
-  // action via Timer
-{$ELSE}
-  if Assigned(Application.OnIdle) then
-    // already working
-  else; // Application.OnIdle:= IdleUpdate;
-{$ENDIF}
+  TToastViaEchoObj.ToastMsgViaEcho(FToastText);
 end;
 
 function TLocationTrackingForm.HandleApplicationEvent(ApplicationEvent
@@ -442,20 +407,7 @@ begin
   SendTextViaIntent(AError);
 end;
 
-{$IFNDEF ISD102T_DELPHI}  // action via Timer
-procedure TLocationTrackingForm.MakeServiceConnection;
-begin
-  if FRemoteServiceConnection=nil then
-    Try
-        FRemoteServiceConnection := TRemoteServiceConnection.Create;
-        FRemoteServiceConnection.OnConnected := OnRemoteServiceConnected;
-        FRemoteServiceConnection.OnHandleMessage := OnHandleRemoteMessage;
-    Except
-      On e:Exception do
-        FToastText:=e.Message;
-    End;
-end;
-{$Endif}
+
 procedure TLocationTrackingForm.OnHandleMessage(const AMessage: JMessage);
 var
   LStr: JString;
@@ -475,34 +427,6 @@ begin
 //    FServiceConnection.Handler.Super.handleMessage(AMessage);
   end;
 end;
-
-{$IFNDEF ISD102T_DELPHI}
-procedure TLocationTrackingForm.OnHandleRemoteMessage(const AMessage: JMessage);
-const
-  SERVICE_STRING = 321;
-var
-  LStr: JString;
-  LBundle: JBundle;
-begin
-  case AMessage.what of
-    SERVICE_STRING:
-    begin
-      LBundle := TJBundle.Wrap(AMessage.obj);
-      LStr := LBundle.getString(TAndroidHelper.StringToJString('Key'));
-      TJToast.JavaClass.makeText(TAndroidHelper.Context, LStr.subSequence(0, LStr.length),
-        TJToast.JavaClass.LENGTH_SHORT).show;
-    end;
-  else
-    FRemoteServiceConnection.Handler.Super.handleMessage(AMessage);
-  end;
-end;
-
-procedure TLocationTrackingForm.OnRemoteServiceConnected(
-  const ServiceMessenger: JMessenger);
-begin
-  BtnSendText.Enabled:=True;
-end;
-{$Endif}
 
 function TLocationTrackingForm.PermissionsOK: Boolean;
 begin
@@ -577,34 +501,6 @@ begin
   // 'java.lang.RuntimeException: Can'''t create handler inside thread that has not called Looper.prepare()'
   FNewData := False;
   Try
-{$IFDEF ISD102T_DELPHI}
-    if FToastText <> '' then
-      Try
-        // When the native activity is visible, location updates are presented
-        // to the user in toast messages of short duration.
-        TJToast.JavaClass.makeText(TAndroidHelper.Context,
-          StrToJCharSequence(FToastText), TJToast.JavaClass.LENGTH_LONG).show;
-        FToastText := '';
-      Except
-        on E: Exception do
-        begin
-          FToastText := E.Message;
-          FNewData := True;
-        end;
-      End;
-{$ELSE}
-    Try
-      LMessage := TJMessage.JavaClass.obtain(nil, GET_TIME);
-//      LMessage.replyTo := ServiceConnection.LocalMessenger;
-//      ServiceConnection.ServiceMessenger.send(LMessage);
-    Except
-        on E: Exception do
-        begin
-          FToastText := E.Message;
-          FNewData := True;
-        end;
-    End;
-{$ENDIF}
     DoButtons;
 
     LDataAccess := TTimeThreadDataSource(Service.DbAccess);

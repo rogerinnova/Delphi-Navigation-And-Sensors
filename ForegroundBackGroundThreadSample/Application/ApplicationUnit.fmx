@@ -177,7 +177,6 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.PlatformDefault = False
     TabOrder = 12
     Text = 'BtnBindExternal'
-    OnClick = BtnBindExternalClick
   end
   object BtnSendText: TButton
     Align = Top
@@ -188,6 +187,5 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.PlatformDefault = False
     TabOrder = 13
     Text = 'BtnSendText'
-    OnClick = BtnSendTextClick
   end
 end
