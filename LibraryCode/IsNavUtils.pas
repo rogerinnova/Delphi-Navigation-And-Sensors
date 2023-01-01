@@ -293,18 +293,19 @@ Function RealFrmDegreeText(AText:String):double;
 var
   ValueArray:TArrayOfUnicodeStrings;
   Deg,min,sec:double;
-  tstneg,lastno:integer;
+  lastno:integer;
   Negative:Boolean;
   LText:string;
 Begin
+  Deg:=0.0;
   try
    Result:=0.0;
    Trim(AText);
    if AText<>'' then
       Result:=StrToFloat(AText);
   Except
-    min:=0.0;
-    sec:=0.0;
+//    min:=0.0;
+//    sec:=0.0;
     ValueArray:=GetNumericArrayFromAlphaNumericString(AText,false,true,false);
     if Length(ValueArray)>0 then
         Deg:=StrToFloat(ValueArray[0]);

@@ -19,8 +19,7 @@ Type
     Class Procedure ClearCanvas(ACanvas: TCanvas);
     Class Function PointOutsideBounds(ACanvas: TCanvas;
       APoint: TPointf): Boolean;
-    Class Function RectOutsideBounds(ACanvas: TCanvas;
-      ARect: TRectf): Boolean;
+    Class Function RectOutsideBounds(ACanvas: TCanvas; ARect: TRectf): Boolean;
     Class Procedure DrawHorizontalScaleBar(ACanvas: TCanvas; ABar: Single;
       AOrigin: TPointf; Const ATxt: String);
     Class Procedure DrawVerticalScaleBar(ACanvas: TCanvas; ABar: Single;
@@ -33,6 +32,9 @@ Type
   Public
     Class Procedure DrawDot(ALocation: TPointf; ACanvas: TCanvas;
       ASolid: Boolean = true);
+    Class Procedure DrawElipse(ALocationRect: TRectf; ACanvas: TCanvas;
+      AColor: TAlphaColor = TAlphaColorRec.Black; AThickness: Single = 5;
+      ATransparency: Single = 0.5; ASolid: Boolean = true);
     Class Function LocationAsDraw(AMouseLocation: TPointf;
       ACanvas: TCanvas): TPointf;
     Class Function LocationAsMouse(ADrawLocation: TPointf;
@@ -223,8 +225,8 @@ begin
           Begin
             PrevJitterLoc := ALocationList[i];
             Nxt := NavAsPoint(PrevJitterLoc, AScale, AOrigin, ACenterOffset);
-            if not PointOutsideBounds(ACanvas,Nxt) then
-                                           Path.LineTo(Nxt);
+            if not PointOutsideBounds(ACanvas, Nxt) then
+              Path.LineTo(Nxt);
             Dots.Add(PrevJitterLoc);
           End;
         End
@@ -252,8 +254,8 @@ begin
           ThisNodeRect := NodeRect;
           ThisNodeRect.Offset(NavAsPoint(Dots[i], AScale, AOrigin,
             ACenterOffset));
-            if not RectOutsideBounds(ACanvas,ThisNodeRect) then
-              Path.AddEllipse(ThisNodeRect);
+          if not RectOutsideBounds(ACanvas, ThisNodeRect) then
+            Path.AddEllipse(ThisNodeRect);
         end;
       ACanvas.Stroke.Thickness := 1;
       ACanvas.Fill.Color := TAlphaColorRec.Crimson;
@@ -514,28 +516,63 @@ begin
   NodeRect.Offset(ALocation);
   Path := TPathData.Create;
   Try
-    if Not RectOutsideBounds(ACanvas,NodeRect) then
-      Begin
-       Path.AddEllipse(NodeRect);
-       if ASolid then
-          Brush := TBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black)
-        else
-          Brush:=nil;
-       Stroke := TStrokeBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black);
-       try
-         Stroke.Thickness := 2;
-         ACanvas.BeginScene;
-         if ASolid then
-           ACanvas.FillPath(Path, 0.5, Brush);
-         ACanvas.DrawPath(Path, 0.5,Stroke);
-         ACanvas.EndScene;
-       finally
-         Brush.Free;
-         Stroke.Free;
-       end;
-      End;
+    if Not RectOutsideBounds(ACanvas, NodeRect) then
+    Begin
+      Path.AddEllipse(NodeRect);
+      if ASolid then
+        Brush := TBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black)
+      else
+        Brush := nil;
+      Stroke := TStrokeBrush.Create(TBrushKind.Solid, TAlphaColorRec.Black);
+      try
+        Stroke.Thickness := 2;
+        ACanvas.BeginScene;
+        if ASolid then
+          ACanvas.FillPath(Path, 0.5, Brush);
+        ACanvas.DrawPath(Path, 0.5, Stroke);
+        ACanvas.EndScene;
+      finally
+        Brush.Free;
+        Stroke.Free;
+      end;
+    End;
   Finally
     Path.Free;
+  End;
+end;
+
+class procedure TIsGraphics.DrawElipse(ALocationRect: TRectf; ACanvas: TCanvas;
+  AColor: TAlphaColor; AThickness: Single; ATransparency: Single;
+  ASolid: Boolean);
+Var
+  StrokeBrush: TStrokeBrush;
+  PaintBrush: TBrush;
+  Path: TPathData;
+begin
+  if ACanvas = nil then
+    Exit;
+
+  StrokeBrush := TStrokeBrush.Create(TBrushKind.Solid, AColor);
+  if ASolid then
+    PaintBrush := TBrush.Create(TBrushKind.Solid, AColor)
+  else
+    PaintBrush := nil;
+  Try
+    StrokeBrush.Thickness := AThickness;
+    Path := TPathData.Create;
+    try
+      Path.AddEllipse(ALocationRect);
+      ACanvas.BeginScene;
+      if ASolid then
+        ACanvas.FillPath(Path, ATransparency, PaintBrush);
+      ACanvas.DrawPath(Path, ATransparency, StrokeBrush);
+      ACanvas.EndScene;
+     finally
+      Path.Free;
+    end;
+  Finally
+    StrokeBrush.Free;
+    PaintBrush.Free;
   End;
 end;
 
@@ -691,12 +728,12 @@ end;
 class function TIsGraphics.PointOutsideBounds(ACanvas: TCanvas;
   APoint: TPointf): Boolean;
 Var
-  Scale:single;
+  Scale: Single;
 begin
   Result := False;
-  Scale:=ACanvas.Scale;
-  if Scale<1 then
-     Scale:=1;
+  Scale := ACanvas.Scale;
+  if Scale < 1 then
+    Scale := 1;
   if APoint.X < ACanvas.Offset.X then
     Result := true
   Else if APoint.y < ACanvas.Offset.y then
@@ -727,15 +764,15 @@ end;
 class function TIsGraphics.RectOutsideBounds(ACanvas: TCanvas;
   ARect: TRectf): Boolean;
 Var
-  Scale:single;
+  Scale: Single;
 begin
   Result := False;
-  Scale:=ACanvas.Scale;
-  if Scale<1 then
-     Scale:=1;
+  Scale := ACanvas.Scale;
+  if Scale < 1 then
+    Scale := 1;
   if ARect.Left < ACanvas.Offset.X then
     Result := true
-  Else if ARect.top < ACanvas.Offset.y then
+  Else if ARect.Top < ACanvas.Offset.y then
     Result := true
   Else if ARect.Left > (ACanvas.Offset.X + ACanvas.width / Scale) then
     Result := true
