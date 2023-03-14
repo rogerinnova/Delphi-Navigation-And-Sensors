@@ -55,6 +55,15 @@ object LocationTrackingForm: TLocationTrackingForm
       TextSettings.HorzAlign = Center
       Text = 'Foreground Background Tracking'
     end
+    object BtnMsg: TButton
+      Position.X = 128.000000000000000000
+      Position.Y = 32.000000000000000000
+      Size.Width = 201.000000000000000000
+      Size.Height = 44.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'BtnMsg'
+    end
   end
   object BtnSendIntent: TButton
     Align = Top

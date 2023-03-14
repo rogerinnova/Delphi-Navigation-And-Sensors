@@ -31,6 +31,7 @@ type
     SpBtnPicLoc1: TSpeedButton;
     SpBtnPicLocEnd: TSpeedButton;
     SpBtnShowAllProgress: TSpeedButton;
+    BtnMsg: TButton;
 
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -93,32 +94,39 @@ uses
 
 procedure TLocationTrackingForm.FormActivate(Sender: TObject);
 begin
+  BtnMsg.Text:='FormActivate';
   if not PermissionsOK then
     LogErrorInForm('Need to set permisions to allow location');
   If FDoneFirstTime then
     Exit;
 
+  BtnMsg.Text:='FormActivate a';
   StartLocationTracking;
+  BtnMsg.Text:='FormActivate b';
   FDoneFirstTime := Service <> nil;
-
+  BtnMsg.Text:='v c';
 end;
 
 procedure TLocationTrackingForm.FormCreate(Sender: TObject);
 var
   ApplicationEventService: IFMXApplicationEventService;
 begin
+  BtnMsg.Text:='FormCreate';
   ServiceConnection := TLocalServiceConnection.Create;
   ServiceConnection.OnConnected := ServiceConnected;
   ServiceConnection.OnDisconnected := ServiceDisconnected;
 
+  BtnMsg.Text:='FormCreate a';
   if TPlatformServices.Current.SupportsPlatformService
     (IFMXApplicationEventService, ApplicationEventService) then
     ApplicationEventService.SetApplicationEventHandler(HandleApplicationEvent);
+  BtnMsg.Text:='FormCreate b';
 end;
 
 procedure TLocationTrackingForm.FormDestroy(Sender: TObject);
 begin
-  ServiceConnection.Free;
+  If ServiceConnection<>nil then
+     ServiceConnection.Free;
 end;
 
 procedure TLocationTrackingForm.FormKeyUp(Sender: TObject; var Key: Word;
@@ -194,6 +202,7 @@ end;
 procedure TLocationTrackingForm.ServiceConnected(const LocalService
   : TAndroidBaseService);
 begin
+  BtnMsg.Text:='ServiceConnected';
   // Called when the connection between the native activity and the service
   // has been established. It is used to obtain the
   // binder object that allows the direct interaction between
@@ -235,11 +244,13 @@ begin
       End;
     TApplicationEvent.BecameActive:
       begin
-{$IFDEF ISD102T_DELPHI}
+{$IFDEF ISD102T_DELPHI} //Binding comes in HandleApplicationEvent
         Result := false; // for debugging
 {$ELSE}
+        if ServiceConnection<>nil then
         Try
           ServiceConnection.BindService(TFBServiceModule.ServiceClassName);
+          BtnMsg.Text:='BindService a';
         Except
           On E: Exception do
             LogErrorInForm(E.Message);
@@ -254,6 +265,7 @@ begin
         // activity to directly interact with it using the binder object
         // passed as parameter in the 'ServiceConnected' procedure.
         Try
+          BtnMsg.Text:='BindService Bf';
           ServiceConnection.BindService(TFBServiceModule.ServiceClassName);
         Except
           On E: Exception do
@@ -273,7 +285,7 @@ begin
           // the system will destroy the service only after
           // a call to the 'stopSelf' procedure.
           ServiceConnection.UnbindService;
-
+          BtnMsg.Text:='BindService ubs';
           Service := nil;
         end;
 
@@ -341,6 +353,7 @@ end;
 procedure TLocationTrackingForm.LogErrorInForm(AError: String);
 begin
   // SendTextViaIntent(AError);
+  BtnMsg.Text:='Log::'+AError;
 end;
 
 function TLocationTrackingForm.PermissionsOK: boolean;
