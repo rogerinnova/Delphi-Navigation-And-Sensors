@@ -100,6 +100,7 @@ object LocationTrackingForm: TLocationTrackingForm
     Size.PlatformDefault = False
     TextSettings.HorzAlign = Center
     Text = 'LblPicTitle'
+    TabOrder = 7
   end
   object ToolBarZoomPic: TToolBar
     Align = MostBottom

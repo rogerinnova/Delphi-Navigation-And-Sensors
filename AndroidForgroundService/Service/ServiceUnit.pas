@@ -7,13 +7,14 @@ uses
   System.Android.Service, System.Classes, System.Notification, System.Sensors,
   System.Sensors.Components, System.UITypes,
   Androidapi.JNI.App, Androidapi.JNI.GraphicsContentViewText,
-  Androidapi.JNI.Os, IsMobileSensors, IsNavUtils;
+  Androidapi.JNI.Os, DbDataRecordObjs, IsMobileSensors, IsNavUtils;
 
 type
   TLocationUpdated = procedure(const NewLocation: RNavigateLongLat) of object;
   TLaunchActiveIntent = Procedure(AIntent: JIntent) of Object;
 
-  TFBServiceModule = class(TAndroidService)
+//  TFBServiceModule = class(TAndroidService)
+  TFBServiceModule = class(TBaseServiceModule)
     NotificationCenter: TNotificationCenter;
 
     procedure AndroidServiceCreate(Sender: TObject);
@@ -31,7 +32,6 @@ type
     NotificationId = -1;
     NotificationChannelId = 'channel_id_foreground_location_tracking';
   private
-    SomeText: string;
     FServiceThread: TThread;
     FIsUpdatingLocation: Boolean;
     FIsRunningInForeground: Boolean;
@@ -42,7 +42,6 @@ type
     FStartIntent: TLaunchActiveIntent;
     FISLocationSensor: TIsLocationSensor;
     procedure SendTextViaIntent(const AText: string);
-    Procedure NotificationNonLocation;
     function GetIntent(const ClassName: string): JIntent;
     function GetNotification: JNotification;
 {$IFDEF ISD102T_DELPHI}
@@ -52,8 +51,9 @@ type
     ServiceClassName = 'com.embarcadero.services.ForegroundBackgroundService';
     IntentExtraStopLocationTracking =
       'com.embarcadero.intent.extra.STOP_LOCATION_TRACKING';
+  protected
+    Procedure NotificationNonLocation;  override;
   public
-    DbAccess: TObject;
     Constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
     Function LocationSensor: TIsLocationSensor;

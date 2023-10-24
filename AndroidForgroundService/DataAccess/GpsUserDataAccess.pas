@@ -206,8 +206,8 @@ end;
 
 function TGpsDataSource.GetAboutText: String;
 {$IFNDEF UseAppForm}
-Var
-  Man: TIsSensorManager;
+//Var
+//  Man: TIsSensorManager;
 {$ENDIF}
 begin
 {$IFDEF UseAppForm}
