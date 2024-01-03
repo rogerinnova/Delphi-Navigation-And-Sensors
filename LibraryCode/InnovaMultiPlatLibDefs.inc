@@ -1,4 +1,5 @@
 {
+
     VER80 - Delphi 1
     VER90 - Delphi 2
     VER100 - Delphi 3
@@ -19,6 +20,23 @@
     LINUX - Indicates that the operating environment is Linux
     MSWINDOWS - Indicates that the operating environment is the MS Windows/li]
     CONSOLE - Indicates that an application is being compiled as a console application
+
+http://docwiki.embarcadero.com/RADStudio/Athens/en/Compiler_Versions
+
+VER360 	Delphi 12.0 Athens / C++Builder 12.0 Athens 	29 	290 	36.0
+VER350 	Delphi 11.0 Alexandria / C++Builder 11.0 Alexandria 	28 	280 	35.0
+VER340 	Delphi 10.4 Sydney / C++Builder 10.4 Sydney 	27 	270 	34.0
+VER330 	Delphi 10.3 Rio / C++Builder 10.3 Rio 	26 	260 	33.0
+VER320 	Delphi 10.2 Tokyo / C++Builder 10.2 Tokyo 	25 	250 	32.0
+VER310 	Delphi 10.1 Berlin / C++Builder 10.1 Berlin 	24 	240 	31.0
+VER300 	Delphi 10 Seattle / C++Builder 10 Seattle 	23 	230 	30.0
+VER290 	Delphi XE8 / C++Builder XE8 	22 	220 	29.0
+VER280 	Delphi XE7 / C++Builder XE7 	21 	210 	28.0
+VER270 	Delphi XE6 / C++Builder XE6 	20 	200 	27.0
+VER260 	Delphi XE5 / C++Builder XE5 	19 	190 	26.0
+VER250 	Delphi XE4 / C++Builder XE4 	18 	180 	25.0
+VER240 	Delphi XE3 / C++Builder XE3 	17 	170 	24.0
+VER230 	Delphi XE2 / C++Builder XE2 	16
     }
 
 
@@ -151,7 +169,7 @@
   {$IfDef IOS}
    {  $Define AUTOREFCOUNT}
    {  $Define NEXTGEN}
-  {$Endif}   
+  {$Endif}
 {$ENDIF}
 
 
@@ -179,7 +197,37 @@
   {$IfDef IOS}
    {  $Define AUTOREFCOUNT}
    {  $Define NEXTGEN}
-  {$Endif}   
+  {$Endif}
 {$ENDIF}
+
+//Innova Solutions Mod Patch Nov2023
+//Delphi 12 Athens
+{$IFDEF VER360}
+  {$DEFINE ISXE2_DELPHI}
+  {$DEFINE ISXE3_DELPHI}
+  {$DEFINE ISXE4_DELPHI}
+  {$DEFINE ISXE5_DELPHI}
+  {$DEFINE ISXE6_DELPHI}
+  {$DEFINE ISXE7_DELPHI}
+  {$DEFINE ISXE8_DELPHI}
+  {$DEFINE ISD10S_DELPHI}
+  {$DEFINE ISD101B_DELPHI}
+  {$DEFINE ISD102T_DELPHI}
+  {$DEFINE ISD103R_DELPHI}
+  {$DEFINE ISD104S_DELPHI}
+  {$DEFINE ISD11A_DELPHI}
+  {$DEFINE ISD12A_DELPHI}
+  {$DEFINE IDCookie}
+  {$IfDef Android}
+   { $Define AUTOREFCOUNT}
+   { $Define NEXTGEN}
+  {$Endif}
+  {$IfDef IOS}
+   { $Define AUTOREFCOUNT}
+   { $Define NEXTGEN}
+  {$Endif}
+{$ENDIF}
+
+
 
 
