@@ -23,9 +23,10 @@ Uses
   Androidapi.JNI.JavaTypes, Androidapi.JNIBridge,
   Androidapi.Helpers, Androidapi.JNI.Os,
 {$ENDIF}
-  FMX.DialogService,
+  FMX.DialogService
   // System.Math,
-  System.Math.Vectors;
+  //,System.Math.Vectors
+  ;
 
 Type
   // If you add here you need to add support to PermissionsGranted
@@ -437,15 +438,15 @@ end;
 Procedure PermissionsGranted(AReq: PmsmSet; ADlgPasses, ADlgFails: Boolean;
 ReturnProc: TPermissionReturnProcRef { =nil } );
 Begin
-  if Assigned(ReturnProc) then
-    ReturnProc(True, AReq, AReq, 'Dummy Permissions');
-
-  if ADlgFails then
-    TDialogService.ShowMessage('Permissions not granted:' +
-      'Dummy Permissions');
-
-  if ADlgPasses then
-    TDialogService.ShowMessage('Granted:' + 'Dummy Permissions');
+//  if Assigned(ReturnProc) then
+//    ReturnProc(True, AReq, AReq, 'Dummy Permissions');
+//
+//  if ADlgFails then
+//    TDialogService.ShowMessage('Permissions not granted:' +
+//      'Dummy Permissions');
+//
+//  if ADlgPasses then
+//    TDialogService.ShowMessage('Granted:' + 'Dummy Permissions');
 end;
 
 Procedure ISRequestPermission(APermArray: TArray<string>;
