@@ -6,6 +6,17 @@ unit IsPermissions;
 // Delphi 10.4 Sydney Targets API Level Android 29 (Android 10)
 // Data Storage changes and permissions required change between these versions https://developer.android.com/training/data-storage
 
+{From Ian Baker June 2025 not yet implemented/considered
+https://forums.adug.org.au/t/android-file-read-write-permissions/60852
+
+' A couple of things here - the permissions are a little tricky
+ but the IDE controls most of them automatically through
+ the “Uses permissions” section on the project properties
+ page. '
+
+}
+
+
 interface
 
 {$I InnovaMultiPlatLibDefs.inc}
